@@ -28,7 +28,7 @@
 #include "Core/Debug.h"
 #include "Core/StringUtil.h"
 #include "Core/ThreadId.h"
-#include "include/libraft/Debug.h"
+#include "include/liblogcabin/Debug.h"
 
 namespace LogCabin {
 namespace Core {

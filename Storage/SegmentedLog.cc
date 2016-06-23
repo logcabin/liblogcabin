@@ -22,7 +22,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "build/Raft/Protocol/Raft.pb.h"
+#include "build/Protocol/Raft.pb.h"
+#include "build/Protocol/ServerStats.pb.h"
 #include "Core/Checksum.h"
 #include "Core/Debug.h"
 #include "Core/ProtoBuf.h"
@@ -30,9 +31,9 @@
 #include "Core/ThreadId.h"
 #include "Core/Time.h"
 #include "Core/Util.h"
+#include "Raft/Globals.h"
 #include "Storage/FilesystemUtil.h"
 #include "Storage/SegmentedLog.h"
-#include "Server/Globals.h"
 
 namespace LogCabin {
 namespace Storage {

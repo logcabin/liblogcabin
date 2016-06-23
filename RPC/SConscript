@@ -5,9 +5,11 @@ src = [
     "ClientRPC.cc",
     "ClientSession.cc",
     "Protocol.cc",
+    "MessageSocket.cc",
     "Server.cc",
     "ServerRPC.cc",
     "ThreadDispatchService.cc",
+    "OpaqueClientRPC.cc",
     "OpaqueServer.cc",
     "OpaqueServerRPC.cc"
 ]

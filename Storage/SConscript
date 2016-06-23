@@ -7,6 +7,7 @@ src = [
     "LogFactory.cc",
     "MemoryLog.cc",
     "SimpleFileLog.cc",
+    "SegmentedLog.cc",
     "SnapshotFile.cc"
 ]
 object_files['Storage'] = (env.StaticObject(src) +

@@ -227,8 +227,9 @@ SConscript('Protocol/SConscript', variant_dir='build/Protocol')
 SConscript('Raft/SConscript', variant_dir='build/Raft')
 SConscript('RPC/SConscript', variant_dir='build/RPC')
 SConscript('Storage/SConscript', variant_dir='build/Storage')
+SConscript('test/SConscript', variant_dir='build/test')
 
-library = env.StaticLibrary("build/libraft",
+library = env.StaticLibrary("build/liblogcabin",
                   (object_files['Core'] +
                    object_files['Event'] +
                    object_files['Protocol'] +
