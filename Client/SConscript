@@ -1,0 +1,6 @@
+Import('env', 'object_files')
+
+src = [
+    "SessionManager.cc",
+]
+object_files['Client'] = env.StaticObject(src)

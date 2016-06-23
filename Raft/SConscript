@@ -3,9 +3,8 @@ Import('env', 'object_files')
 src = [
     "Globals.cc",
     "RaftConsensus.cc",
-    "RaftConsensusInvariants.cc"
+    "RaftConsensusInvariants.cc",
+    "RaftService.cc"
 ]
 object_files['Raft'] = (env.StaticObject(src) +
-                                 env.Protobuf("Protocol/Raft.proto") +
-                                 env.Protobuf("Protocol/SnapshotStats.proto") + 
                                  env.Protobuf("SnapshotMetadata.proto"))

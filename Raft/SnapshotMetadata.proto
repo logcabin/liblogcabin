@@ -14,7 +14,7 @@
 
 package LogCabin.Raft.SnapshotMetadata;
 
-import "build/Raft/Protocol/Raft.proto";
+import "build/Protocol/Raft.proto";
 
 /**
  * Header for a snapshot file.

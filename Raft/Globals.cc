@@ -18,20 +18,26 @@
 
 #include "Core/Debug.h"
 #include "Core/StringUtil.h"
-#include "Protocol/Common.h"
 #include "Raft/Globals.h"
 #include "Raft/RaftConsensus.h"
+#include "Raft/RaftService.h"
 #include "RPC/Server.h"
 
 
 namespace LogCabin {
 namespace Raft {
 
+static const int DEFAULT_PORT = 5254;
+static const int MAX_MESSAGE_LENGTH = 1024 + 1024 * 1024;
+
 ////////// Globals //////////
 
 Globals::Globals()
     : config()
     , eventLoop()
+    , raft()
+    , raftService()
+    , rpcServer()
     , clusterUUID()
     , serverId(~0UL)
 {
@@ -49,24 +55,26 @@ Globals::init()
         clusterUUID.set(uuid);
     serverId = config.read<uint64_t>("serverId");
     Core::Debug::processName = Core::StringUtil::format("%lu", serverId);
-    /*
+
+    if (!raft) {
+        raft.reset(new RaftConsensus(*this));
+    }
+
+    if (!raftService) {
+        raftService.reset(new RaftService(raft));
+    }
+
     if (!rpcServer) {
         rpcServer.reset(new RPC::Server(eventLoop,
-                                        Protocol::Common::MAX_MESSAGE_LENGTH));
+                                        MAX_MESSAGE_LENGTH));
 
         uint32_t maxThreads = config.read<uint16_t>("maxThreads", 16);
-        namespace ServiceId = Protocol::Common::ServiceId;
-        rpcServer->registerService(ServiceId::RAFT_SERVICE,
+        rpcServer->registerService(2, // TODO(tnachen): Do we need service for Raft?
                                    raftService,
                                    maxThreads);
 
         std::string listenAddressesStr =
             config.read<std::string>("listenAddresses");
-        {
-            ServerStats::Lock serverStatsLock(serverStats);
-            serverStatsLock->set_server_id(serverId);
-            serverStatsLock->set_addresses(listenAddressesStr);
-        }
         std::vector<std::string> listenAddresses =
             Core::StringUtil::split(listenAddressesStr, ',');
         if (listenAddresses.empty()) {
@@ -75,7 +83,7 @@ Globals::init()
         for (auto it = listenAddresses.begin();
              it != listenAddresses.end();
              ++it) {
-            RPC::Address address(*it, Protocol::Common::DEFAULT_PORT);
+            RPC::Address address(*it, DEFAULT_PORT);
             address.refresh(RPC::Address::TimePoint::max());
             std::string error = rpcServer->bind(address);
             if (!error.empty()) {
@@ -89,11 +97,6 @@ Globals::init()
         raft->serverAddresses = listenAddressesStr;
         raft->init();
     }
-
-    if (!stateMachine) {
-        stateMachine.reset(new StateMachine(raft, config, *this));
-    }
-    */
 }
 
 void

@@ -220,17 +220,19 @@ object_files = {}
 Export('object_files')
 
 Export('env')
-SConscript('src/SConscript', variant_dir='build')
-#SConscript('test/SConscript', variant_dir='build/test')
+SConscript('Core/SConscript', variant_dir='build/Core')
+SConscript('Client/SConscript', variant_dir='build/Client')
+SConscript('Event/SConscript', variant_dir='build/Event')
+SConscript('Protocol/SConscript', variant_dir='build/Protocol')
+SConscript('Raft/SConscript', variant_dir='build/Raft')
+SConscript('RPC/SConscript', variant_dir='build/RPC')
+SConscript('Storage/SConscript', variant_dir='build/Storage')
 
-# This function is taken from http://www.scons.org/wiki/PhonyTargets
-def PhonyTargets(env = None, **kw):
-    if not env: env = DefaultEnvironment()
-    for target,action in kw.items():
-        env.AlwaysBuild(env.Alias(target, [], action))
-
-# Create empty directory so that it can be installed to /var/log/logcabin
-try:
-    os.mkdir("build/emptydir")
-except OSError:
-    pass # directory exists
+library = env.StaticLibrary("build/libraft",
+                  (object_files['Core'] +
+                   object_files['Event'] +
+                   object_files['Protocol'] +
+                   object_files['Raft'] +
+                   object_files['RPC'] +
+                   object_files['Storage']))
+env.Default(library)

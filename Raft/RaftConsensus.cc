@@ -25,7 +25,7 @@
 #include <unistd.h>
 
 #include "build/Raft/SnapshotMetadata.pb.h"
-#include "build/Raft/Protocol/Raft.pb.h"
+#include "build/Protocol/Raft.pb.h"
 
 #include "Core/Buffer.h"
 #include "Core/Debug.h"
@@ -34,7 +34,6 @@
 #include "Core/StringUtil.h"
 #include "Core/ThreadId.h"
 #include "Core/Util.h"
-#include "Protocol/Common.h"
 #include "Raft/RaftConsensus.h"
 #include "Raft/Globals.h"
 #include "RPC/ClientRPC.h"
@@ -46,6 +45,10 @@ namespace LogCabin {
 namespace Raft {
 
 typedef Storage::Log Log;
+
+static const int DEFAULT_PORT = 5254;
+static const int MAX_MESSAGE_LENGTH = 1024 + 1024 * 1024;
+
 
 namespace RaftConsensusInternal {
 
@@ -271,7 +274,7 @@ Peer::callRPC(Raft::Protocol::OpCode opCode,
 {
     typedef RPC::ClientRPC::Status RPCStatus;
     rpc = RPC::ClientRPC(getSession(lockGuard),
-                         LogCabin::Protocol::Common::ServiceId::RAFT_SERVICE,
+                         2, // TODO(tnachen): Remove service id
                          /* serviceSpecificErrorVersion = */ 0,
                          opCode,
                          request);
@@ -331,7 +334,7 @@ Peer::getSession(std::unique_lock<Mutex>& lockGuard)
         TimePoint timeout = Clock::now() + consensus.ELECTION_TIMEOUT;
         // release lock for concurrency
         Core::MutexUnlock<Mutex> unlockGuard(lockGuard);
-        RPC::Address target(addresses, LogCabin::Protocol::Common::DEFAULT_PORT);
+        RPC::Address target(addresses, DEFAULT_PORT);
         target.refresh(timeout);
         Client::SessionManager::ServerId peerId(serverId);
         session = consensus.sessionManager.createSession(
@@ -960,7 +963,7 @@ RaftConsensus::RaftConsensus(Globals& globals)
             globals.config.read<uint64_t>(
                 "stateMachineUpdaterBackoffMilliseconds",
                 10000)))
-            , SOFT_RPC_SIZE_LIMIT(LogCabin::Protocol::Common::MAX_MESSAGE_LENGTH - 1024)
+            , SOFT_RPC_SIZE_LIMIT(MAX_MESSAGE_LENGTH - 1024)
     , serverId(0)
     , serverAddresses()
     , globals(globals)

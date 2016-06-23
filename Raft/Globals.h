@@ -27,8 +27,14 @@
 
 namespace LogCabin {
 
+namespace RPC {
+class Server;
+}
+
+
 namespace Raft {
 class RaftConsensus;
+class RaftService;
 
 /**
  * Holds the LogCabin daemon's top-level objects.
@@ -65,6 +71,23 @@ class Globals {
      * The event loop that runs the RPC system.
      */
     Event::Loop eventLoop;
+
+  private:
+    /**
+     * Raft consensus
+     * (TODO): Remove this dependency, we should expose just Raft to user, not Globals
+     */
+    std::shared_ptr<RaftConsensus> raft;
+
+    /**
+     * Service used to communicate between servers.
+     */
+    std::shared_ptr<RaftService> raftService;
+
+    /**
+     * Listens for inbound RPCs and passes them off to the services.
+     */
+    std::unique_ptr<RPC::Server> rpcServer;
 
   public:
     /**

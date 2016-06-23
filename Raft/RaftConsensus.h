@@ -23,8 +23,8 @@
 
 #include "build/Protocol/Client.pb.h"
 #include "build/Protocol/ServerStats.pb.h"
-#include "build/Raft/Protocol/Raft.pb.h"
-#include "build/Raft/Protocol/SnapshotStats.pb.h"
+#include "build/Protocol/Raft.pb.h"
+#include "build/Protocol/SnapshotStats.pb.h"
 #include "Client/SessionManager.h"
 #include "Core/CompatAtomic.h"
 #include "Core/ConditionVariable.h"
