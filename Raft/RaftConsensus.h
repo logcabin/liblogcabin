@@ -989,7 +989,7 @@ class RaftConsensus {
      * \param globals
      *      Handle to LogCabin's top-level objects.
      */
-    explicit RaftConsensus(Globals& globals);
+    explicit RaftConsensus(Globals& globals, Storage::Log* log = nullptr);
 
     /**
      * Destructor.

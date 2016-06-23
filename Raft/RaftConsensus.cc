@@ -934,7 +934,7 @@ RaftConsensus::Entry::~Entry()
 
 ////////// RaftConsensus //////////
 
-RaftConsensus::RaftConsensus(Globals& globals)
+RaftConsensus::RaftConsensus(Globals& globals, Log* log)
     : ELECTION_TIMEOUT(
         std::chrono::milliseconds(
             globals.config.read<uint64_t>(
@@ -974,7 +974,7 @@ RaftConsensus::RaftConsensus(Globals& globals)
     , stateChanged()
     , exiting(false)
     , numPeerThreads(0)
-    , log()
+    , log(log)
     , logSyncQueued(false)
     , leaderDiskThreadWorking(false)
     , configuration()
