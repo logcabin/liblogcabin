@@ -28,8 +28,10 @@
 #include "Client/SessionManager.h"
 #include "Core/CompatAtomic.h"
 #include "Core/ConditionVariable.h"
+#include "Core/Config.h"
 #include "Core/Mutex.h"
 #include "Core/Time.h"
+#include "Event/Loop.h"
 #include "RPC/ClientRPC.h"
 #include "Storage/Layout.h"
 #include "Storage/Log.h"
@@ -41,23 +43,20 @@
 namespace LogCabin {
 
 // forward declarations
-namespace Event {
-class Loop;
-}
 namespace RPC {
 class ClientSession;
+class Server;
 }
 
 namespace Raft {
 
 // forward declaration
-class Globals;
-
-// forward declaration
 class RaftConsensus;
+class RaftService;
 
 namespace RaftConsensusInternal {
 
+// TODO(tnachen): Hide internal details into Pimpl class.
 
 class Invariants {
   public:
@@ -989,7 +988,7 @@ class RaftConsensus {
      * \param globals
      *      Handle to LogCabin's top-level objects.
      */
-    explicit RaftConsensus(Globals& globals, Storage::Log* log = nullptr);
+    explicit RaftConsensus(Core::Config& config, Storage::Log* log = nullptr);
 
     /**
      * Destructor.
@@ -1466,11 +1465,32 @@ class RaftConsensus {
     std::string serverAddresses;
 
   private:
+    /**
+     * Configuration for Raft library
+     */
+    Core::Config config;
 
     /**
-     * The LogCabin daemon's top-level objects.
+     * Main event loop that serves all Raft leader and peers RPC communication.
      */
-    Globals& globals;
+    Event::Loop eventLoop;
+
+    /**
+     * RPC Server for serving all underlying RPC calls.
+     */
+    std::unique_ptr<RPC::Server> rpcServer;
+
+    /**
+     * Raft service that registers to the RPC server for serving Raft protocol.
+     */
+    std::shared_ptr<RaftService> raftService;
+
+    /**
+     * A unique ID for the cluster that this server may connect to. This is
+     * initialized to a value from the config file. If it's not set then, it
+     * may be set later as a result of learning a UUID from some other server.
+     */
+    Client::SessionManager::ClusterUUID clusterUUID;
 
     /**
      * Where the files for the log and snapshots are stored.

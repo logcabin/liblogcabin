@@ -35,9 +35,9 @@
 #include "Core/ThreadId.h"
 #include "Core/Util.h"
 #include "Raft/RaftConsensus.h"
-#include "Raft/Globals.h"
 #include "RPC/ClientRPC.h"
 #include "RPC/ClientSession.h"
+#include "RPC/Server.h"
 #include "RPC/ServerRPC.h"
 #include "Storage/LogFactory.h"
 
@@ -49,6 +49,97 @@ typedef Storage::Log Log;
 static const int DEFAULT_PORT = 5254;
 static const int MAX_MESSAGE_LENGTH = 1024 + 1024 * 1024;
 
+class RaftService : public RPC::Service {
+  public:
+    /// Constructor.
+    explicit RaftService(RaftConsensus& raft) : raft(raft) {}
+
+    /// Destructor.
+    ~RaftService() {}
+
+    void handleRPC(RPC::ServerRPC rpc);
+    std::string getName() const { return "raftService"; }
+
+  private:
+    ////////// RPC handlers //////////
+
+    void requestVote(RPC::ServerRPC rpc);
+    void appendEntries(RPC::ServerRPC rpc);
+    void installSnapshot(RPC::ServerRPC rpc);
+
+    RaftConsensus& raft;
+  public:
+
+    // RaftService is non-copyable.
+    RaftService(const RaftService&) = delete;
+    RaftService& operator=(const RaftService&) = delete;
+}; // class RaftService
+
+void
+RaftService::handleRPC(RPC::ServerRPC rpc)
+{
+    using Raft::Protocol::OpCode;
+
+    // Call the appropriate RPC handler based on the request's opCode.
+    switch (rpc.getOpCode()) {
+        case OpCode::APPEND_ENTRIES:
+            appendEntries(std::move(rpc));
+            break;
+        case OpCode::INSTALL_SNAPSHOT:
+            installSnapshot(std::move(rpc));
+            break;
+        case OpCode::REQUEST_VOTE:
+            requestVote(std::move(rpc));
+            break;
+        default:
+            WARNING("Client sent request with bad op code (%u) to RaftService",
+                    rpc.getOpCode());
+            rpc.rejectInvalidRequest();
+    }
+}
+
+/**
+ * Place this at the top of each RPC handler. Afterwards, 'request' will refer
+ * to the protocol buffer for the request with all required fields set.
+ * 'response' will be an empty protocol buffer for you to fill in the response.
+ */
+#define PRELUDE(rpcClass) \
+    Raft::Protocol::rpcClass::Request request;	 \
+    Raft::Protocol::rpcClass::Response response; \
+    if (!rpc.getRequest(request)) \
+        return;
+
+////////// RPC handlers //////////
+
+void
+RaftService::appendEntries(RPC::ServerRPC rpc)
+{
+    PRELUDE(AppendEntries);
+    //VERBOSE("AppendEntries:\n%s",
+    //        Core::ProtoBuf::dumpString(request).c_str());
+    raft.handleAppendEntries(request, response);
+    rpc.reply(response);
+}
+
+void
+RaftService::installSnapshot(RPC::ServerRPC rpc)
+{
+    PRELUDE(InstallSnapshot);
+    //VERBOSE("InstallSnapshot:\n%s",
+    //        Core::ProtoBuf::dumpString(request).c_str());
+    raft.handleInstallSnapshot(request, response);
+    rpc.reply(response);
+}
+
+void
+RaftService::requestVote(RPC::ServerRPC rpc)
+{
+    PRELUDE(RequestVote);
+    //VERBOSE("RequestVote:\n%s",
+    //        Core::ProtoBuf::dumpString(request).c_str());
+    raft.handleRequestVote(request, response);
+    rpc.reply(response);
+}
 
 namespace RaftConsensusInternal {
 
@@ -166,7 +257,7 @@ LocalServer::updatePeerStats(LogCabin::Protocol::ServerStats_Raft_Peer& peerStat
 Peer::Peer(uint64_t serverId, RaftConsensus& consensus)
     : Server(serverId)
     , consensus(consensus)
-    , eventLoop(consensus.globals.eventLoop)
+    , eventLoop(consensus.eventLoop)
     , exiting(false)
     , requestVoteDone(false)
     , haveVote_(false)
@@ -340,7 +431,7 @@ Peer::getSession(std::unique_lock<Mutex>& lockGuard)
         session = consensus.sessionManager.createSession(
             target,
             timeout,
-            &consensus.globals.clusterUUID,
+            &consensus.clusterUUID,
             &peerId);
     }
     return session;
@@ -934,42 +1025,45 @@ RaftConsensus::Entry::~Entry()
 
 ////////// RaftConsensus //////////
 
-RaftConsensus::RaftConsensus(Globals& globals, Log* log)
+RaftConsensus::RaftConsensus(Core::Config& config, Log* log)
     : ELECTION_TIMEOUT(
         std::chrono::milliseconds(
-            globals.config.read<uint64_t>(
+            config.read<uint64_t>(
                 "electionTimeoutMilliseconds",
                 500)))
     , HEARTBEAT_PERIOD(
-        globals.config.keyExists("heartbeatPeriodMilliseconds")
+        config.keyExists("heartbeatPeriodMilliseconds")
             ? std::chrono::nanoseconds(
                 std::chrono::milliseconds(
-                    globals.config.read<uint64_t>(
+                    config.read<uint64_t>(
                         "heartbeatPeriodMilliseconds")))
             : ELECTION_TIMEOUT / 2)
     , MAX_LOG_ENTRIES_PER_REQUEST(
-        globals.config.read<uint64_t>(
+        config.read<uint64_t>(
             "maxLogEntriesPerRequest",
             5000))
     , RPC_FAILURE_BACKOFF(
-        globals.config.keyExists("rpcFailureBackoffMilliseconds")
+        config.keyExists("rpcFailureBackoffMilliseconds")
             ? std::chrono::nanoseconds(
                 std::chrono::milliseconds(
-                    globals.config.read<uint64_t>(
+                    config.read<uint64_t>(
                         "rpcFailureBackoffMilliseconds")))
             : (ELECTION_TIMEOUT / 2))
     , STATE_MACHINE_UPDATER_BACKOFF(
         std::chrono::milliseconds(
-            globals.config.read<uint64_t>(
+            config.read<uint64_t>(
                 "stateMachineUpdaterBackoffMilliseconds",
                 10000)))
-            , SOFT_RPC_SIZE_LIMIT(MAX_MESSAGE_LENGTH - 1024)
+    , SOFT_RPC_SIZE_LIMIT(MAX_MESSAGE_LENGTH - 1024)
     , serverId(0)
     , serverAddresses()
-    , globals(globals)
+    , config(config)
+    , eventLoop()
+    , rpcServer(new RPC::Server(eventLoop, MAX_MESSAGE_LENGTH))
+    , raftService(new RaftService(*this))
+    , clusterUUID()
     , storageLayout()
-    , sessionManager(globals.eventLoop,
-                     globals.config)
+    , sessionManager(eventLoop, config)
     , mutex()
     , stateChanged()
     , exiting(false)
@@ -1037,18 +1131,53 @@ RaftConsensus::init()
 {
     std::lock_guard<Mutex> lockGuard(mutex);
 #if DEBUG
-    if (globals.config.read<bool>("raftDebug", false)) {
+    if (config.read<bool>("raftDebug", false)) {
         mutex.callback = std::bind(&Invariants::checkAll, &invariants);
     }
 #endif
 
+    std::string uuid = config.read("clusterUUID", std::string(""));
+    if (!uuid.empty())
+        clusterUUID.set(uuid);
+    serverId = config.read<uint64_t>("serverId");
+    Core::Debug::processName = Core::StringUtil::format("%lu", serverId);
+
+
+    uint32_t maxThreads = config.read<uint16_t>("maxThreads", 16);
+    rpcServer->registerService(2, // TODO(tnachen): Do we need other services?
+                              raftService,
+                              maxThreads);
+
+    std::string listenAddressesStr = config.read<std::string>("listenAddresses");
+    std::vector<std::string> listenAddresses =
+        Core::StringUtil::split(listenAddressesStr, ',');
+    if (listenAddresses.empty()) {
+        EXIT("No server addresses specified to listen on");
+    }
+
+    for (auto it = listenAddresses.begin();
+         it != listenAddresses.end();
+         ++it) {
+      RPC::Address address(*it, DEFAULT_PORT);
+      address.refresh(RPC::Address::TimePoint::max());
+      std::string error = rpcServer->bind(address);
+      if (!error.empty()) {
+        EXIT("Could not listen on address %s: %s",
+             address.toString().c_str(),
+             error.c_str());
+      }
+      NOTICE("Serving on %s",
+             address.toString().c_str());
+    }
+    serverAddresses = listenAddressesStr;
+
     NOTICE("My server ID is %lu", serverId);
 
     if (storageLayout.topDir.fd == -1) {
-        if (globals.config.read("use-temporary-storage", false))
+        if (config.read("use-temporary-storage", false))
             storageLayout.initTemporary(serverId); // unit tests
         else
-            storageLayout.init(globals.config, serverId);
+            storageLayout.init(config, serverId);
     }
 
     configuration.reset(new Configuration(serverId, *this));
@@ -1056,7 +1185,7 @@ RaftConsensus::init()
 
     NOTICE("Reading the log");
     if (!log) { // some unit tests pre-set the log; don't overwrite it
-        log = Storage::LogFactory::makeLog(globals.config, storageLayout);
+        log = Storage::LogFactory::makeLog(config, storageLayout);
     }
     for (uint64_t index = log->getLogStartIndex();
          index <= log->getLastLogIndex();
@@ -1105,7 +1234,7 @@ RaftConsensus::init()
             &RaftConsensus::leaderDiskThreadMain, this);
         timerThread = std::thread(
             &RaftConsensus::timerThreadMain, this);
-        if (globals.config.read<bool>("disableStateMachineUpdates", false)) {
+        if (config.read<bool>("disableStateMachineUpdates", false)) {
             NOTICE("Not starting state machine updater thread (state machine "
                    "updates are disabled in config)");
         } else {
