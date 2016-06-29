@@ -1093,6 +1093,7 @@ RaftConsensus::RaftConsensus(Core::Config& config, Log* log)
     , timerThread()
     , stateMachineUpdaterThread()
     , stepDownThread()
+    , eventLoopThread()
     , invariants(*this)
 {
 }
@@ -1109,6 +1110,8 @@ RaftConsensus::~RaftConsensus()
         stateMachineUpdaterThread.join();
     if (stepDownThread.joinable())
         stepDownThread.join();
+    if (eventLoopThread.joinable())
+        eventLoopThread.join();
     NOTICE("Joined with disk and timer threads");
     std::unique_lock<Mutex> lockGuard(mutex);
     if (numPeerThreads > 0) {
@@ -1243,7 +1246,10 @@ RaftConsensus::init()
         }
         stepDownThread = std::thread(
             &RaftConsensus::stepDownThreadMain, this);
-    }
+
+	eventLoopThread = std::thread(
+	    &Event::Loop::runForever, &eventLoop);
+    } 
     // log->path = ""; // hack to disable disk
     stateChanged.notify_all();
     printElectionState();
@@ -1258,6 +1264,7 @@ RaftConsensus::exit()
     if (configuration)
         configuration->forEach(&Server::exit);
     interruptAll();
+    eventLoop.exit();
 }
 
 void

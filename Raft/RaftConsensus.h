@@ -1732,6 +1732,12 @@ class RaftConsensus {
      */
     std::thread stepDownThread;
 
+    /**
+     * The thread that runs the event loop. We avoid running it on the main thread
+     * so we don't interfere with existing loops
+     */
+    std::thread eventLoopThread;
+
     Invariants invariants;
 
     friend class RaftConsensusInternal::LocalServer;
