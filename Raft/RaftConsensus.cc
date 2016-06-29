@@ -1249,7 +1249,7 @@ RaftConsensus::init()
 
 	eventLoopThread = std::thread(
 	    &Event::Loop::runForever, &eventLoop);
-    } 
+    }
     // log->path = ""; // hack to disable disk
     stateChanged.notify_all();
     printElectionState();
