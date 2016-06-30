@@ -18,7 +18,6 @@
 #include <thread>
 
 #include "build/Protocol/Client.pb.h"
-#include "include/liblogcabin/Debug.h"
 #include "Client/SessionManager.h"
 #include "Core/Config.h"
 #include "Event/Loop.h"

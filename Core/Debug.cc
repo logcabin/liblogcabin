@@ -28,7 +28,6 @@
 #include "Core/Debug.h"
 #include "Core/StringUtil.h"
 #include "Core/ThreadId.h"
-#include "include/liblogcabin/Debug.h"
 
 namespace LibLogCabin {
 namespace Core {
