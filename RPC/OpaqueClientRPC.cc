@@ -18,7 +18,7 @@
 #include "RPC/ClientSession.h"
 #include "RPC/OpaqueClientRPC.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 OpaqueClientRPC::OpaqueClientRPC()
@@ -147,5 +147,5 @@ operator<<(::std::ostream& os, OpaqueClientRPC::Status status)
     }
 }
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

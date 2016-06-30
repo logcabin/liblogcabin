@@ -18,7 +18,7 @@
 
 #include "Core/Util.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace Util {
 namespace {
@@ -79,7 +79,7 @@ TEST(CoreUtilTest, ThreadInterruptedException) {
                  ThreadInterruptedException().what());
 }
 
-} // namespace LogCabin::Core::Util::<anonymous>
-} // namespace LogCabin::Core::Util
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::Util::<anonymous>
+} // namespace LibLogCabin::Core::Util
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

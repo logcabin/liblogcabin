@@ -22,10 +22,10 @@
 #include "Core/CompatHash.h"
 #include "RPC/MessageSocket.h"
 
-#ifndef LOGCABIN_RPC_OPAQUESERVER_H
-#define LOGCABIN_RPC_OPAQUESERVER_H
+#ifndef LIBLOGCABIN_RPC_OPAQUESERVER_H
+#define LIBLOGCABIN_RPC_OPAQUESERVER_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 
 // forward declaration
 namespace Core {
@@ -271,7 +271,7 @@ class OpaqueServer {
     OpaqueServer& operator=(const OpaqueServer&) = delete;
 }; // class OpaqueServer
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_RPC_OPAQUESERVER_H */
+#endif /* LIBLOGCABIN_RPC_OPAQUESERVER_H */

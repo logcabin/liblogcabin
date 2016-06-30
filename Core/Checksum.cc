@@ -35,7 +35,7 @@
 #include "Core/StringUtil.h"
 #include "Core/Util.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace Checksum {
 
@@ -183,7 +183,7 @@ class Algorithms {
     std::map<std::string, Algorithm> byName;
 } algorithms;
 
-} // namespace LogCabin::Core::Checksum::<anonymous>
+} // namespace LibLogCabin::Core::Checksum::<anonymous>
 
 std::vector<std::string>
 listAlgorithms()
@@ -271,6 +271,6 @@ verify(const char* checksum,
     return std::string();
 }
 
-} // namespace LogCabin::Core::Checksum
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::Checksum
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

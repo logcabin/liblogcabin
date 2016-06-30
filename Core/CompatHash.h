@@ -15,8 +15,8 @@
 
 #include <memory>
 
-#ifndef LOGCABIN_CORE_COMPATHASH_H
-#define LOGCABIN_CORE_COMPATHASH_H
+#ifndef LIBLOGCABIN_CORE_COMPATHASH_H
+#define LIBLOGCABIN_CORE_COMPATHASH_H
 
 // missing std::hash<std::shared_ptr<T>> implementation on gcc 4.4 and 4.5
 // Clang has it but but has defines like gcc 4.2.
@@ -36,4 +36,4 @@ struct hash<shared_ptr<T>>
 
 #endif // gcc < 4.6
 
-#endif /* LOGCABIN_CORE_COMPATHASH_H */
+#endif /* LIBLOGCABIN_CORE_COMPATHASH_H */

@@ -26,7 +26,7 @@
 #include "Event/Loop.h"
 #include "Event/Timer.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Event {
 
 namespace {
@@ -171,5 +171,5 @@ Loop::exit()
     shouldExit = true;
 }
 
-} // namespace LogCabin::Event
-} // namespace LogCabin
+} // namespace LibLogCabin::Event
+} // namespace LibLogCabin

@@ -18,7 +18,7 @@
 
 #include "Core/CompatHash.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace {
 
@@ -33,6 +33,6 @@ TEST(CoreCompatHashTest, basics) {
     EXPECT_EQ(1U, set.size());
 }
 
-} // namespace LogCabin::Core::<anonymous>
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::<anonymous>
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

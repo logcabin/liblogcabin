@@ -103,10 +103,10 @@ class GTestSetupListener : public ::testing::EmptyTestEventListener {
   public:
     // this fires before each test fixture's constructor
     void OnTestStart(const ::testing::TestInfo& testInfo) {
-        LogCabin::Core::Debug::setLogPolicy({
+        LibLogCabin::Core::Debug::setLogPolicy({
             {"", "WARNING"}
         });
-        LogCabin::Storage::FilesystemUtil::skipFsync = true;
+        LibLogCabin::Storage::FilesystemUtil::skipFsync = true;
     }
 };
 

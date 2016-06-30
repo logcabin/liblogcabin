@@ -19,7 +19,7 @@
 #include "Core/StringUtil.h"
 #include "Core/Time.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace {
 
@@ -446,6 +446,6 @@ TEST(CoreTime, output_timepoint) {
 }
 
 
-} // namespace LogCabin::Core::<anonymous>
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::<anonymous>
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

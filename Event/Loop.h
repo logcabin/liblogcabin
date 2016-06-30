@@ -14,8 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef LOGCABIN_EVENT_LOOP_H
-#define LOGCABIN_EVENT_LOOP_H
+#ifndef LIBLOGCABIN_EVENT_LOOP_H
+#define LIBLOGCABIN_EVENT_LOOP_H
 
 #include <cinttypes>
 #include <memory>
@@ -24,7 +24,7 @@
 #include "Core/Mutex.h"
 #include "Event/Timer.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Event {
 
 // forward declarations
@@ -198,7 +198,7 @@ class Loop {
     Loop& operator=(const Loop&) = delete;
 }; // class Loop
 
-} // namespace LogCabin::Event
-} // namespace LogCabin
+} // namespace LibLogCabin::Event
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_EVENT_LOOP_H */
+#endif /* LIBLOGCABIN_EVENT_LOOP_H */

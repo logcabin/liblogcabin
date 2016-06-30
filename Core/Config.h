@@ -49,10 +49,10 @@
 #include <string>
 #include <typeinfo>
 
-#ifndef LOGCABIN_CORE_CONFIG_H
-#define LOGCABIN_CORE_CONFIG_H
+#ifndef LIBLOGCABIN_CORE_CONFIG_H
+#define LIBLOGCABIN_CORE_CONFIG_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 
 /**
@@ -256,7 +256,7 @@ Config::set(const string& key, const T& value)
     set(key, toString(value));
 }
 
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_CORE_CONFIG_H */
+#endif /* LIBLOGCABIN_CORE_CONFIG_H */

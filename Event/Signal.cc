@@ -24,7 +24,7 @@
 #include "Event/Loop.h"
 #include "Event/Signal.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Event {
 
 namespace {
@@ -141,5 +141,5 @@ Signal::handleFileEvent(uint32_t events)
     handleSignalEvent();
 }
 
-} // namespace LogCabin::Event
-} // namespace LogCabin
+} // namespace LibLogCabin::Event
+} // namespace LibLogCabin

@@ -19,7 +19,7 @@
 #include "Core/ThreadId.h"
 #include "RPC/ThreadDispatchService.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 ThreadDispatchService::ThreadDispatchService(
@@ -105,5 +105,5 @@ ThreadDispatchService::workerMain()
     }
 }
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

@@ -29,7 +29,7 @@
 #include "Core/Util.h"
 #include "Storage/FilesystemUtil.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Storage {
 namespace FilesystemUtil {
 
@@ -496,6 +496,6 @@ FileContents::getHelper(uint64_t offset, uint64_t length)
     return static_cast<const char*>(map) + offset;
 }
 
-} // namespace LogCabin::Storage::FilesystemUtil
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage::FilesystemUtil
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin

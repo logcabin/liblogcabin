@@ -21,7 +21,7 @@
 #include "RPC/ClientSession.h"
 #include "build/Protocol/Client.pb.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Client {
 
 SessionManager::SessionManager(Event::Loop& eventLoop,
@@ -122,5 +122,5 @@ SessionManager::createSession(const RPC::Address& address,
                                  address.toString().c_str()));
 }
 
-} // namespace LogCabin::Client
-} // namespace LogCabin
+} // namespace LibLogCabin::Client
+} // namespace LibLogCabin

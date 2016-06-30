@@ -41,7 +41,7 @@
 #include "RPC/ServerRPC.h"
 #include "Storage/LogFactory.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Raft {
 
 typedef Storage::Log Log;
@@ -238,7 +238,7 @@ LocalServer::dumpToStream(std::ostream& os) const
 }
 
 void
-LocalServer::updatePeerStats(LogCabin::Protocol::ServerStats_Raft_Peer& peerStats,
+LocalServer::updatePeerStats(LibLogCabin::Protocol::ServerStats_Raft_Peer& peerStats,
                              Core::Time::SteadyTimeConverter& time) const
 {
     switch (consensus.state) {
@@ -467,7 +467,7 @@ Peer::dumpToStream(std::ostream& os) const
 }
 
 void
-Peer::updatePeerStats(LogCabin::Protocol::ServerStats_Raft_Peer& peerStats,
+Peer::updatePeerStats(LibLogCabin::Protocol::ServerStats_Raft_Peer& peerStats,
                       Core::Time::SteadyTimeConverter& time) const
 {
     switch (consensus.state) {
@@ -757,13 +757,13 @@ Configuration::stagingMin(const GetValue& getValue) const
 }
 
 void
-Configuration::updateServerStats(LogCabin::Protocol::ServerStats& serverStats,
+Configuration::updateServerStats(LibLogCabin::Protocol::ServerStats& serverStats,
                                  Core::Time::SteadyTimeConverter& time) const
 {
     for (auto it = knownServers.begin();
          it != knownServers.end();
          ++it) {
-        LogCabin::Protocol::ServerStats_Raft_Peer& peerStats =
+        LibLogCabin::Protocol::ServerStats_Raft_Peer& peerStats =
             *serverStats.mutable_raft()->add_peer();
         peerStats.set_server_id(it->first);
         const ServerRef& peer = it->second;
@@ -952,7 +952,7 @@ namespace {
 
 struct StagingProgressing {
     StagingProgressing(uint64_t epoch,
-                       LogCabin::Protocol::Client::SetConfiguration::Response& response)
+                       LibLogCabin::Protocol::Client::SetConfiguration::Response& response)
         : epoch(epoch)
         , response(response)
     {
@@ -968,7 +968,7 @@ struct StagingProgressing {
         return true;
     }
     const uint64_t epoch;
-    LogCabin::Protocol::Client::SetConfiguration::Response& response;
+    LibLogCabin::Protocol::Client::SetConfiguration::Response& response;
 };
 
 struct StateMachineVersionIntersection {
@@ -1733,8 +1733,8 @@ RaftConsensus::replicate(const Core::Buffer& operation)
 
 RaftConsensus::ClientResult
 RaftConsensus::setConfiguration(
-      const LogCabin::Protocol::Client::SetConfiguration::Request& request,
-      LogCabin::Protocol::Client::SetConfiguration::Response& response)
+      const LibLogCabin::Protocol::Client::SetConfiguration::Request& request,
+      LibLogCabin::Protocol::Client::SetConfiguration::Response& response)
 {
     std::unique_lock<Mutex> lockGuard(mutex);
 
@@ -2002,23 +2002,23 @@ RaftConsensus::snapshotDone(
 }
 
 void
-RaftConsensus::updateServerStats(LogCabin::Protocol::ServerStats& serverStats) const
+RaftConsensus::updateServerStats(LibLogCabin::Protocol::ServerStats& serverStats) const
 {
     std::lock_guard<Mutex> lockGuard(mutex);
     Core::Time::SteadyTimeConverter time;
     serverStats.clear_raft();
-    LogCabin::Protocol::ServerStats::Raft& raftStats = *serverStats.mutable_raft();
+    LibLogCabin::Protocol::ServerStats::Raft& raftStats = *serverStats.mutable_raft();
 
     raftStats.set_current_term(currentTerm);
     switch (state) {
         case State::FOLLOWER:
-            raftStats.set_state(LogCabin::Protocol::ServerStats::Raft::FOLLOWER);
+            raftStats.set_state(LibLogCabin::Protocol::ServerStats::Raft::FOLLOWER);
             break;
         case State::CANDIDATE:
-            raftStats.set_state(LogCabin::Protocol::ServerStats::Raft::CANDIDATE);
+            raftStats.set_state(LibLogCabin::Protocol::ServerStats::Raft::CANDIDATE);
             break;
         case State::LEADER:
-            raftStats.set_state(LogCabin::Protocol::ServerStats::Raft::LEADER);
+            raftStats.set_state(LibLogCabin::Protocol::ServerStats::Raft::LEADER);
             break;
     }
     raftStats.set_commit_index(commitIndex);
@@ -2118,7 +2118,7 @@ RaftConsensus::stateMachineUpdaterThreadMain()
                         entry.set_term(currentTerm);
                         entry.set_type(Raft::Protocol::EntryType::DATA);
                         entry.set_cluster_time(clusterClock.leaderStamp());
-                        LogCabin::Protocol::Client::StateMachineCommand::Request command;
+                        LibLogCabin::Protocol::Client::StateMachineCommand::Request command;
                         command.mutable_advance_version()->
                             set_requested_version(s.maxVersion);
                         Core::Buffer cmdBuf;
@@ -3166,5 +3166,5 @@ operator<<(std::ostream& os, RaftConsensus::State state)
     return os;
 }
 
-} // namespace LogCabin::Raft
-} // namespace LogCabin
+} // namespace LibLogCabin::Raft
+} // namespace LibLogCabin

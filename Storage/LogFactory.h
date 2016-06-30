@@ -15,10 +15,10 @@
 
 #include <memory>
 
-#ifndef LOGCABIN_STORAGE_LOGFACTORY_H
-#define LOGCABIN_STORAGE_LOGFACTORY_H
+#ifndef LIBLOGCABIN_STORAGE_LOGFACTORY_H
+#define LIBLOGCABIN_STORAGE_LOGFACTORY_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 
 // forward declaration
 namespace Core {
@@ -49,8 +49,8 @@ std::unique_ptr<Log>
 makeLog(const Core::Config& config,
         const Storage::Layout& storageLayout);
 
-} // namespace LogCabin::Storage::LogFactory
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage::LogFactory
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_STORAGE_LOGFACTORY_H */
+#endif /* LIBLOGCABIN_STORAGE_LOGFACTORY_H */

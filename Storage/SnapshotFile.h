@@ -23,10 +23,10 @@
 #include "Core/ProtoBuf.h"
 #include "Storage/FilesystemUtil.h"
 
-#ifndef LOGCABIN_STORAGE_SNAPSHOTFILE_H
-#define LOGCABIN_STORAGE_SNAPSHOTFILE_H
+#ifndef LIBLOGCABIN_STORAGE_SNAPSHOTFILE_H
+#define LIBLOGCABIN_STORAGE_SNAPSHOTFILE_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Storage {
 
 class Layout; // forward declaration
@@ -167,8 +167,8 @@ class Writer : public Core::ProtoBuf::OutputStream {
 
 };
 
-} // namespace LogCabin::Storage::SnapshotFile
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage::SnapshotFile
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_STORAGE_SNAPSHOTFILE_H */
+#endif /* LIBLOGCABIN_STORAGE_SNAPSHOTFILE_H */

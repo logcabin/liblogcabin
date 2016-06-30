@@ -25,7 +25,7 @@
 #include "Core/StringUtil.h"
 #include "Storage/MemoryLog.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Storage {
 
 ////////// MemoryLog //////////
@@ -126,5 +126,5 @@ MemoryLog::updateMetadata()
 {
 }
 
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin

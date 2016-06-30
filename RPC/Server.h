@@ -22,10 +22,10 @@
 #include "RPC/OpaqueServer.h"
 #include "RPC/Service.h"
 
-#ifndef LOGCABIN_RPC_SERVER_H
-#define LOGCABIN_RPC_SERVER_H
+#ifndef LIBLOGCABIN_RPC_SERVER_H
+#define LIBLOGCABIN_RPC_SERVER_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 /**
@@ -123,7 +123,7 @@ class Server {
     Server& operator=(const Server&) = delete;
 }; // class Server
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_RPC_SERVER_H */
+#endif /* LIBLOGCABIN_RPC_SERVER_H */

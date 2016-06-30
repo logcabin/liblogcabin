@@ -32,7 +32,7 @@
 #include "Core/Debug.h"
 #include "Core/Random.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace Random {
 
@@ -57,8 +57,8 @@ class RandomState {
         , randbuf()
     {
         reset();
-        int err = pthread_atfork(LogCabin::Core::Random::acquireMutex,
-                                 LogCabin::Core::Random::releaseMutex,
+        int err = pthread_atfork(LibLogCabin::Core::Random::acquireMutex,
+                                 LibLogCabin::Core::Random::releaseMutex,
                                  resetRandomState);
         if (err != 0) {
             // too early to call ERROR in here
@@ -114,8 +114,8 @@ class RandomState {
         return r;
     }
 
-    friend void LogCabin::Core::Random::acquireMutex();
-    friend void LogCabin::Core::Random::releaseMutex();
+    friend void LibLogCabin::Core::Random::acquireMutex();
+    friend void LibLogCabin::Core::Random::releaseMutex();
 
   private:
 
@@ -244,6 +244,6 @@ randomRange(uint64_t start, uint64_t end)
     return uint64_t(lround(randomRangeDouble(double(start), double(end))));
 }
 
-} // namespace LogCabin::Core::Random
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::Random
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

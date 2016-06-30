@@ -16,7 +16,7 @@
 #include "Core/Endian.h"
 #include "RPC/Protocol.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 namespace Protocol {
 
@@ -98,6 +98,6 @@ ResponseHeaderVersion1::toBigEndian()
     // no fields, nothing to flip
 }
 
-} // namespace LogCabin::RPC::Protocol
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC::Protocol
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

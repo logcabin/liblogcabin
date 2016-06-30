@@ -19,7 +19,7 @@
 #include "Core/ConditionVariable.h"
 #include "Core/Time.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace {
 
@@ -341,6 +341,6 @@ TEST_F(CoreConditionVariableTest, wait_until_CoreMutex_real_TimingSensitive) {
     EXPECT_EQ(26U, mutexCounter); // 2 from lock guard, 24 from wait_until
 }
 
-} // namespace LogCabin::Core::<anonymous>
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::<anonymous>
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

@@ -16,10 +16,10 @@
 
 #include <mutex>
 
-#ifndef LOGCABIN_EVENT_FILE_H
-#define LOGCABIN_EVENT_FILE_H
+#ifndef LIBLOGCABIN_EVENT_FILE_H
+#define LIBLOGCABIN_EVENT_FILE_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Event {
 
 // forward declaration
@@ -187,7 +187,7 @@ class File {
     File& operator=(const File&) = delete;
 };
 
-} // namespace LogCabin::Event
-} // namespace LogCabin
+} // namespace LibLogCabin::Event
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_EVENT_FILE_H */
+#endif /* LIBLOGCABIN_EVENT_FILE_H */

@@ -21,10 +21,10 @@
 
 #include "Core/StringUtil.h"
 
-#ifndef LOGCABIN_CORE_TIME_H
-#define LOGCABIN_CORE_TIME_H
+#ifndef LIBLOGCABIN_CORE_TIME_H
+#define LIBLOGCABIN_CORE_TIME_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace Time {
 
@@ -289,9 +289,9 @@ class SteadyTimeConverter {
     SystemClock::time_point systemNow;
 };
 
-} // namespace LogCabin::Core::Time
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::Time
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
 namespace std {
 
@@ -325,17 +325,17 @@ std::ostream&
 operator<<(std::ostream& os,
            const std::chrono::time_point<Clock, Duration>& timePoint) {
     typedef std::chrono::time_point<Clock, Duration> TimePoint;
-    using LogCabin::Core::StringUtil::format;
+    using LibLogCabin::Core::StringUtil::format;
 
     if (timePoint == TimePoint::min())
         return os << "TimePoint::min()";
     if (timePoint == TimePoint::max())
         return os << "TimePoint::max()";
 
-    struct timespec ts = LogCabin::Core::Time::makeTimeSpec(timePoint);
+    struct timespec ts = LibLogCabin::Core::Time::makeTimeSpec(timePoint);
     return os << format("%ld.%09ld", ts.tv_sec, ts.tv_nsec);
 }
 
 } // namespace std
 
-#endif /* LOGCABIN_CORE_TIME_H */
+#endif /* LIBLOGCABIN_CORE_TIME_H */

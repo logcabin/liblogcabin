@@ -18,7 +18,7 @@
 #include "RPC/ServerRPC.h"
 #include "RPC/ThreadDispatchService.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 
@@ -85,5 +85,5 @@ Server::registerService(uint16_t serviceId,
         std::make_shared<ThreadDispatchService>(service, 0, maxThreads);
 }
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

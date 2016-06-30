@@ -22,10 +22,10 @@
 #include "Storage/MemoryLog.h"
 #include "Storage/Log.h"
 
-#ifndef LOGCABIN_STORAGE_SIMPLEFILELOG_H
-#define LOGCABIN_STORAGE_SIMPLEFILELOG_H
+#ifndef LIBLOGCABIN_STORAGE_SIMPLEFILELOG_H
+#define LIBLOGCABIN_STORAGE_SIMPLEFILELOG_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Storage {
 
 // forward declaration
@@ -80,7 +80,7 @@ class SimpleFileLog : public Log {
     Entry read(const std::string& entryPath) const;
 };
 
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_STORAGE_SIMPLEFILELOG_H */
+#endif /* LIBLOGCABIN_STORAGE_SIMPLEFILELOG_H */

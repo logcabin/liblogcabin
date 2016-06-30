@@ -20,7 +20,7 @@
 
 #include "Core/StringUtil.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace StringUtil {
 namespace {
@@ -120,7 +120,7 @@ TEST(CoreStringUtilTest, trim) {
     EXPECT_EQ("", trim("  "));
 }
 
-} // namespace LogCabin::Core::StringUtil::<anonymous>
-} // namespace LogCabin::Core::StringUtil
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::StringUtil::<anonymous>
+} // namespace LibLogCabin::Core::StringUtil
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

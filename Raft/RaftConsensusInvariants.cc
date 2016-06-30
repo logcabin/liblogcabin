@@ -17,7 +17,7 @@
 #include "Core/ProtoBuf.h"
 #include "Raft/RaftConsensus.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Raft {
 namespace RaftConsensusInternal {
 
@@ -302,5 +302,5 @@ Invariants::checkPeerDelta()
 
 } // namespace RaftConsensusInternal
 
-} // namespace LogCabin::Raft
-} // namespace LogCabin
+} // namespace LibLogCabin::Raft
+} // namespace LibLogCabin

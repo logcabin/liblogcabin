@@ -26,10 +26,10 @@
 #include "Storage/FilesystemUtil.h"
 #include "Storage/Log.h"
 
-#ifndef LOGCABIN_STORAGE_SEGMENTEDLOG_H
-#define LOGCABIN_STORAGE_SEGMENTEDLOG_H
+#ifndef LIBLOGCABIN_STORAGE_SEGMENTEDLOG_H
+#define LIBLOGCABIN_STORAGE_SEGMENTEDLOG_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 
 // forward declaration
 namespace Core {
@@ -650,7 +650,7 @@ class SegmentedLog : public Log {
     std::thread segmentPreparer;
 };
 
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_STORAGE_SEGMENTEDLOG_H */
+#endif /* LIBLOGCABIN_STORAGE_SEGMENTEDLOG_H */

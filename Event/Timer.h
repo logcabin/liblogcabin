@@ -14,13 +14,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef LOGCABIN_EVENT_TIMER_H
-#define LOGCABIN_EVENT_TIMER_H
+#ifndef LIBLOGCABIN_EVENT_TIMER_H
+#define LIBLOGCABIN_EVENT_TIMER_H
 
 #include "Core/Time.h"
 #include "Event/File.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Event {
 
 // forward declaration
@@ -135,7 +135,7 @@ class Timer : private File {
     Timer& operator=(const Timer&) = delete;
 };
 
-} // namespace LogCabin::Event
-} // namespace LogCabin
+} // namespace LibLogCabin::Event
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_EVENT_TIMER_H */
+#endif /* LIBLOGCABIN_EVENT_TIMER_H */

@@ -14,8 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef LOGCABIN_RPC_ADDRESS_H
-#define LOGCABIN_RPC_ADDRESS_H
+#ifndef LIBLOGCABIN_RPC_ADDRESS_H
+#define LIBLOGCABIN_RPC_ADDRESS_H
 
 #include <sys/socket.h>
 #include <string>
@@ -23,7 +23,7 @@
 
 #include "Core/Time.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 /**
@@ -146,7 +146,7 @@ class Address {
     socklen_t len;
 };
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_RPC_ADDRESS_H */
+#endif /* LIBLOGCABIN_RPC_ADDRESS_H */

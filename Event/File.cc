@@ -22,7 +22,7 @@
 #include "Event/File.h"
 #include "Event/Loop.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Event {
 
 //// class File::Monitor ////
@@ -98,5 +98,5 @@ File::~File()
     }
 }
 
-} // namespace LogCabin::Event
-} // namespace LogCabin
+} // namespace LibLogCabin::Event
+} // namespace LibLogCabin

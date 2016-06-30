@@ -21,10 +21,10 @@
 #include "Core/Mutex.h"
 #include "Core/Time.h"
 
-#ifndef LOGCABIN_CORE_CONDITIONVARIABLE_H
-#define LOGCABIN_CORE_CONDITIONVARIABLE_H
+#ifndef LIBLOGCABIN_CORE_CONDITIONVARIABLE_H
+#define LIBLOGCABIN_CORE_CONDITIONVARIABLE_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 
 /**
@@ -133,7 +133,7 @@ class ConditionVariable {
     Core::Time::SteadyClock::time_point lastWaitUntil;
 };
 
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
-#endif // LOGCABIN_CORE_CONDITIONVARIABLE_H
+#endif // LIBLOGCABIN_CORE_CONDITIONVARIABLE_H

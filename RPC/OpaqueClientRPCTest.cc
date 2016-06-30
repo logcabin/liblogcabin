@@ -18,7 +18,7 @@
 #include "Core/Debug.h"
 #include "RPC/OpaqueClientRPC.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 namespace {
 
@@ -91,6 +91,6 @@ TEST(RPCOpaqueClientRPCTest, update) {
     // tested in RPCClientSessionTest
 }
 
-} // namespace LogCabin::RPC::<anonymous>
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC::<anonymous>
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

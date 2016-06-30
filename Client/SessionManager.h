@@ -13,8 +13,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef LOGCABIN_CLIENT_SESSIONMANAGER_H
-#define LOGCABIN_CLIENT_SESSIONMANAGER_H
+#ifndef LIBLOGCABIN_CLIENT_SESSIONMANAGER_H
+#define LIBLOGCABIN_CLIENT_SESSIONMANAGER_H
 
 #include <cstdint>
 #include <memory>
@@ -23,7 +23,7 @@
 
 #include "RPC/Address.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 
 // forward declaration
 namespace Core {
@@ -172,7 +172,7 @@ class SessionManager {
     bool skipVerify;
 };
 
-} // namespace LogCabin::Client
-} // namespace LogCabin
+} // namespace LibLogCabin::Client
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_CLIENT_SESSIONMANAGER_H */
+#endif /* LIBLOGCABIN_CLIENT_SESSIONMANAGER_H */

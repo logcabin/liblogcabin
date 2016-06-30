@@ -24,7 +24,7 @@
 #include "RPC/Protocol.h"
 #include "RPC/ServerRPC.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 namespace {
 
@@ -94,7 +94,7 @@ class RPCServerRPCTest : public ::testing::Test {
     Core::Buffer request;
     Core::Buffer response;
     ServerRPC serverRPC;
-    LogCabin::ProtoBuf::TestMessage payload;
+    LibLogCabin::ProtoBuf::TestMessage payload;
 };
 
 TEST_F(RPCServerRPCTest, constructor_tooShort) {
@@ -127,7 +127,7 @@ TEST_F(RPCServerRPCTest, getRequest_normal) {
     serializeRequestPayload(payload);
     fillRequestHeader(1, 2, 3, 4);
     call();
-    LogCabin::ProtoBuf::TestMessage actual;
+    LibLogCabin::ProtoBuf::TestMessage actual;
     EXPECT_TRUE(serverRPC.getRequest(actual));
     EXPECT_EQ(payload, actual);
     EXPECT_TRUE(serverRPC.needsReply());
@@ -139,7 +139,7 @@ TEST_F(RPCServerRPCTest, getRequest_inactive) {
     fillRequestHeader(1, 2, 3, 4);
     call();
     serverRPC.rejectInvalidRequest();
-    LogCabin::ProtoBuf::TestMessage actual;
+    LibLogCabin::ProtoBuf::TestMessage actual;
     Core::Buffer buffer;
     EXPECT_FALSE(serverRPC.getRequest(actual));
     EXPECT_FALSE(serverRPC.getRequest(buffer));
@@ -149,8 +149,8 @@ TEST_F(RPCServerRPCTest, getRequest_inactive) {
 TEST_F(RPCServerRPCTest, getRequest_invalid) {
     fillRequestHeader(1, 2, 3, 4);
     call();
-    LogCabin::ProtoBuf::TestMessage actual;
-    LogCabin::Core::Debug::setLogPolicy({{"", "ERROR"}});
+    LibLogCabin::ProtoBuf::TestMessage actual;
+    LibLogCabin::Core::Debug::setLogPolicy({{"", "ERROR"}});
     EXPECT_FALSE(serverRPC.getRequest(actual));
     EXPECT_EQ(Status::INVALID_REQUEST, getStatus());
     EXPECT_FALSE(serverRPC.needsReply());
@@ -178,7 +178,7 @@ TEST_F(RPCServerRPCTest, reply) {
     serverRPC.reply(payload);
     EXPECT_EQ(Status::OK, getStatus());
     EXPECT_FALSE(serverRPC.needsReply());
-    LogCabin::ProtoBuf::TestMessage actual;
+    LibLogCabin::ProtoBuf::TestMessage actual;
     EXPECT_TRUE(Core::ProtoBuf::parse(response,
                                       actual,
                                       sizeof(ResponseHeaderVersion1)));
@@ -191,7 +191,7 @@ TEST_F(RPCServerRPCTest, returnError) {
     serverRPC.returnError(payload);
     EXPECT_EQ(Status::SERVICE_SPECIFIC_ERROR, getStatus());
     EXPECT_FALSE(serverRPC.needsReply());
-    LogCabin::ProtoBuf::TestMessage actual;
+    LibLogCabin::ProtoBuf::TestMessage actual;
     EXPECT_TRUE(Core::ProtoBuf::parse(response,
                                       actual,
                                       sizeof(ResponseHeaderVersion1)));
@@ -224,6 +224,6 @@ TEST_F(RPCServerRPCTest, closeSession) {
 
 // reject tested sufficiently by rejectInvalidService
 
-} // namespace LogCabin::RPC::<anonymous>
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC::<anonymous>
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

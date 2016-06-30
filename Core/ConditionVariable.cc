@@ -19,7 +19,7 @@
 #include "Core/ConditionVariable.h"
 #include "Core/Debug.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 
 ConditionVariable::ConditionVariable()
@@ -136,5 +136,5 @@ ConditionVariable::wait_until(
     }
 }
 
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

@@ -14,12 +14,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef LOGCABIN_EVENT_SIGNAL_H
-#define LOGCABIN_EVENT_SIGNAL_H
+#ifndef LIBLOGCABIN_EVENT_SIGNAL_H
+#define LIBLOGCABIN_EVENT_SIGNAL_H
 
 #include "Event/File.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Event {
 
 // forward declaration
@@ -137,7 +137,7 @@ class Signal : private Event::File {
     Signal& operator=(const Signal&) = delete;
 };
 
-} // namespace LogCabin::Event
-} // namespace LogCabin
+} // namespace LibLogCabin::Event
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_EVENT_SIGNAL_H */
+#endif /* LIBLOGCABIN_EVENT_SIGNAL_H */

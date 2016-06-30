@@ -22,7 +22,7 @@
 #include "Storage/SegmentedLog.h"
 #include "Storage/SimpleFileLog.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Storage {
 namespace LogFactory {
 
@@ -53,6 +53,6 @@ makeLog(const Core::Config& config,
     return log;
 }
 
-} // namespace LogCabin::Storage::LogFactory
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage::LogFactory
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin

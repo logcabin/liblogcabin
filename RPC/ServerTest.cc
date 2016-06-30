@@ -27,12 +27,12 @@
 #include "RPC/ServerRPC.h"
 #include "RPC/ServiceMock.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 namespace {
 
-using LogCabin::Protocol::Common::DEFAULT_PORT;
-using LogCabin::Protocol::Common::MAX_MESSAGE_LENGTH;
+using LibLogCabin::Protocol::Common::DEFAULT_PORT;
+using LibLogCabin::Protocol::Common::MAX_MESSAGE_LENGTH;
 typedef ClientSession::TimePoint TimePoint;
 
 class RPCServerTest : public ::testing::Test {
@@ -128,6 +128,6 @@ TEST_F(RPCServerTest, registerService) {
               rpc.waitForReply(NULL, NULL, TimePoint::max()));
 }
 
-} // namespace LogCabin::RPC::<anonymous>
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC::<anonymous>
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

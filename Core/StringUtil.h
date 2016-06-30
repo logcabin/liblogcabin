@@ -17,10 +17,10 @@
 #include <string>
 #include <vector>
 
-#ifndef LOGCABIN_CORE_STRINGUTIL_H
-#define LOGCABIN_CORE_STRINGUTIL_H
+#ifndef LIBLOGCABIN_CORE_STRINGUTIL_H
+#define LIBLOGCABIN_CORE_STRINGUTIL_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace StringUtil {
 
@@ -127,8 +127,8 @@ toString(const T& t)
  */
 std::string trim(const std::string& s);
 
-} // namespace LogCabin::Core::StringUtil
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::StringUtil
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_CORE_STRINGUTIL_H */
+#endif /* LIBLOGCABIN_CORE_STRINGUTIL_H */

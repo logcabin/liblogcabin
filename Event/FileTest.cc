@@ -21,7 +21,7 @@
 #include "Event/File.h"
 #include "Event/Loop.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Event {
 namespace {
 
@@ -141,6 +141,6 @@ TEST_F(EventFileTest, File_destructor_caller_closes_fd) {
     // closePipeFds() makes sure pipeFds[0] can be closed without errors
 }
 
-} // namespace LogCabin::Event::<anonymous>
-} // namespace LogCabin::Event
-} // namespace LogCabin
+} // namespace LibLogCabin::Event::<anonymous>
+} // namespace LibLogCabin::Event
+} // namespace LibLogCabin

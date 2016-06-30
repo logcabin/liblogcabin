@@ -30,7 +30,7 @@
 #include "Core/ThreadId.h"
 #include "include/liblogcabin/Debug.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace Debug {
 
@@ -501,6 +501,6 @@ log(LogLevel level,
     fflush(stream);
 }
 
-} // namespace LogCabin::Core::Debug
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::Debug
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

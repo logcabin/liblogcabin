@@ -16,10 +16,10 @@
 #include <cinttypes>
 #include <cstdlib>
 
-#ifndef LOGCABIN_CORE_BUFFER_H
-#define LOGCABIN_CORE_BUFFER_H
+#ifndef LIBLOGCABIN_CORE_BUFFER_H
+#define LIBLOGCABIN_CORE_BUFFER_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 
 /**
@@ -166,7 +166,7 @@ class Buffer {
 
 }; // class Buffer
 
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_CORE_BUFFER_H */
+#endif /* LIBLOGCABIN_CORE_BUFFER_H */

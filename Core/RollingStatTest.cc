@@ -20,7 +20,7 @@
 #include "Core/ProtoBuf.h"
 #include "Core/RollingStat.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace {
 
 typedef Core::RollingStat::TimePoint TimePoint;
@@ -130,5 +130,5 @@ TEST(CoreRollingStatTest, exceptional) {
 
 // updateProtobuf tested with basics and exceptional
 
-} // namespace LogCabin::<anonymous>
-} // namespace LogCabin
+} // namespace LibLogCabin::<anonymous>
+} // namespace LibLogCabin

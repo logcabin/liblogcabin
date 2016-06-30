@@ -18,7 +18,7 @@
  * \file
  * This file is used to control how LogCabin's debug log (event log) messages
  * are handled. When used by client applications, this should be accessed as
- * LogCabin::Client::Debug (the LogCabin::Core namespace is used internally in
+ * LibLogCabin::Client::Debug (the LibLogCabin::Core namespace is used internally in
  * LogCabin).
  */
 
@@ -30,10 +30,10 @@
 #include <utility>
 #include <vector>
 
-#ifndef LOGCABIN_INCLUDE_LOGCABIN_DEBUG_H
-#define LOGCABIN_INCLUDE_LOGCABIN_DEBUG_H
+#ifndef LIBLOGCABIN_INCLUDE_LIBLOGCABIN_DEBUG_H
+#define LIBLOGCABIN_INCLUDE_LIBLOGCABIN_DEBUG_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace Debug {
 
@@ -224,8 +224,8 @@ std::string
 logPolicyToString(const std::vector<
                             std::pair<std::string, std::string>>& policy);
 
-} // namespace LogCabin::Core::Debug
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::Debug
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_INCLUDE_LOGCABIN_DEBUG_H */
+#endif /* LIBLOGCABIN_INCLUDE_LIBLOGCABIN_DEBUG_H */

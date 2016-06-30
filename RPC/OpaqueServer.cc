@@ -28,7 +28,7 @@
 #include "RPC/OpaqueServer.h"
 #include "RPC/OpaqueServerRPC.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 
@@ -250,5 +250,5 @@ OpaqueServer::bind(const Address& listenAddress)
     return "";
 }
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

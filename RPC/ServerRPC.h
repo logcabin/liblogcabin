@@ -20,10 +20,10 @@
 #include "RPC/Protocol.h"
 #include "RPC/OpaqueServerRPC.h"
 
-#ifndef LOGCABIN_RPC_SERVERRPC_H
-#define LOGCABIN_RPC_SERVERRPC_H
+#ifndef LIBLOGCABIN_RPC_SERVERRPC_H
+#define LIBLOGCABIN_RPC_SERVERRPC_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 /**
@@ -187,7 +187,7 @@ class ServerRPC {
 
 }; // class ServerRPC
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_RPC_SERVERRPC_H */
+#endif /* LIBLOGCABIN_RPC_SERVERRPC_H */

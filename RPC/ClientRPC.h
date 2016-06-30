@@ -22,10 +22,10 @@
 
 #include "RPC/OpaqueClientRPC.h"
 
-#ifndef LOGCABIN_RPC_CLIENTRPC_H
-#define LOGCABIN_RPC_CLIENTRPC_H
+#ifndef LIBLOGCABIN_RPC_CLIENTRPC_H
+#define LIBLOGCABIN_RPC_CLIENTRPC_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 class ClientSession; // forward declaration
@@ -207,7 +207,7 @@ class ClientRPC {
 ::std::ostream&
 operator<<(::std::ostream& os, ClientRPC::Status status);
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_RPC_CLIENTRPC_H */
+#endif /* LIBLOGCABIN_RPC_CLIENTRPC_H */

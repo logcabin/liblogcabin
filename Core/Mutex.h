@@ -19,10 +19,10 @@
 
 #include "Core/Debug.h"
 
-#ifndef LOGCABIN_CORE_MUTEX_H
-#define LOGCABIN_CORE_MUTEX_H
+#ifndef LIBLOGCABIN_CORE_MUTEX_H
+#define LIBLOGCABIN_CORE_MUTEX_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 
 /**
@@ -132,7 +132,7 @@ class HoldingMutex {
     }
 };
 
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
-#endif // LOGCABIN_CORE_MUTEX_H
+#endif // LIBLOGCABIN_CORE_MUTEX_H

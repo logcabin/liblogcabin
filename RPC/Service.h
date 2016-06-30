@@ -13,10 +13,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef LOGCABIN_RPC_SERVICE_H
-#define LOGCABIN_RPC_SERVICE_H
+#ifndef LIBLOGCABIN_RPC_SERVICE_H
+#define LIBLOGCABIN_RPC_SERVICE_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 // forward declaration
@@ -57,7 +57,7 @@ class Service {
     Service& operator=(const Service&) = delete;
 }; // class Service
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_RPC_SERVICE_H */
+#endif /* LIBLOGCABIN_RPC_SERVICE_H */

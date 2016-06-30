@@ -25,7 +25,7 @@
 #include "Core/ProtoBuf.h"
 #include "Storage/Log.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Storage {
 
 ////////// Log::Sync //////////
@@ -88,5 +88,5 @@ operator<<(std::ostream& os, const Log& log)
     return os;
 }
 
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin

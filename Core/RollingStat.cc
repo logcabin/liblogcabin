@@ -19,7 +19,7 @@
 #include "Core/RollingStat.h"
 #include "Core/StringUtil.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 
 RollingStat::RollingStat()
@@ -210,5 +210,5 @@ operator<<(std::ostream& os, const RollingStat& stat)
     return os;
 }
 
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

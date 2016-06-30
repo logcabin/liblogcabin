@@ -21,10 +21,10 @@
 #include <cinttypes>
 #include <ostream>
 
-#ifndef LOGCABIN_RPC_PROTOCOL_H
-#define LOGCABIN_RPC_PROTOCOL_H
+#ifndef LIBLOGCABIN_RPC_PROTOCOL_H
+#define LIBLOGCABIN_RPC_PROTOCOL_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 namespace Protocol {
 
@@ -205,8 +205,8 @@ struct ResponseHeaderVersion1 {
 
 } __attribute__((packed));
 
-} // namespace LogCabin::RPC::Protocol
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC::Protocol
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin
 
-#endif // LOGCABIN_RPC_PROTOCOL_H
+#endif // LIBLOGCABIN_RPC_PROTOCOL_H

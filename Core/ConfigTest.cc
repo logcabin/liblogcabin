@@ -23,7 +23,7 @@
 #include "Core/Config.h"
 #include "Storage/FilesystemUtil.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 
 using std::map;
@@ -223,5 +223,5 @@ TEST_F(CoreConfigTest, readLine) {
     // This is tested sufficiently in streamIn
 }
 
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

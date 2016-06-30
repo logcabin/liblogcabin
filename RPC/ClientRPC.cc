@@ -20,7 +20,7 @@
 #include "RPC/ClientRPC.h"
 #include "RPC/ClientSession.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 using RPC::Protocol::RequestHeaderPrefix;
@@ -228,5 +228,5 @@ operator<<(::std::ostream& os, ClientRPC::Status status)
     }
 }
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

@@ -25,10 +25,10 @@
 #include <functional>
 #include <stdexcept>
 
-#ifndef LOGCABIN_CORE_UTIL_H
-#define LOGCABIN_CORE_UTIL_H
+#ifndef LIBLOGCABIN_CORE_UTIL_H
+#define LIBLOGCABIN_CORE_UTIL_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace Util {
 
@@ -49,7 +49,7 @@ downCast(const Large& large)
 }
 
 /// Like sizeof but returns a uint32_t.
-#define sizeof32(x) LogCabin::Core::Util::downCast<uint32_t>(sizeof(x))
+#define sizeof32(x) LibLogCabin::Core::Util::downCast<uint32_t>(sizeof(x))
 
 /**
  * Calls a function when this object goes out of scope.
@@ -96,8 +96,8 @@ class ThreadInterruptedException : public std::runtime_error {
     ThreadInterruptedException();
 };
 
-} // namespace LogCabin::Core::Util
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::Util
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_CORE_UTIL_H */
+#endif /* LIBLOGCABIN_CORE_UTIL_H */

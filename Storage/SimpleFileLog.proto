@@ -17,7 +17,7 @@
  * Contains the format for SimpleFileLog's metadata files.
  */
 
-package LogCabin.Storage.SimpleFileLogMetadata;
+package LibLogCabin.Storage.SimpleFileLogMetadata;
 
 import "build/Protocol/RaftLogMetadata.proto";
 

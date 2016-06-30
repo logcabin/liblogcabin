@@ -23,7 +23,7 @@
 #include "Event/Loop.h"
 #include "Event/Timer.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Event {
 
 namespace {
@@ -140,5 +140,5 @@ Timer::handleFileEvent(uint32_t events)
     handleTimerEvent();
 }
 
-} // namespace LogCabin::Event
-} // namespace LogCabin
+} // namespace LibLogCabin::Event
+} // namespace LibLogCabin

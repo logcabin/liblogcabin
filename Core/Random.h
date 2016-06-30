@@ -16,10 +16,10 @@
 
 #include <cinttypes>
 
-#ifndef LOGCABIN_CORE_RANDOM_H
-#define LOGCABIN_CORE_RANDOM_H
+#ifndef LIBLOGCABIN_CORE_RANDOM_H
+#define LIBLOGCABIN_CORE_RANDOM_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 
 /**
@@ -44,9 +44,9 @@ double randomRangeDouble(double start, double end);
 uint64_t randomRange(uint64_t start, uint64_t end);
 
 
-} // namespace LogCabin::Core::Random
+} // namespace LibLogCabin::Core::Random
 
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_CORE_RANDOM_H */
+#endif /* LIBLOGCABIN_CORE_RANDOM_H */

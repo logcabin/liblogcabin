@@ -20,7 +20,7 @@
 #include "Event/Loop.h"
 #include "Event/Signal.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Event {
 namespace {
 
@@ -136,6 +136,6 @@ TEST_F(EventSignalTest, fires) {
     EXPECT_EQ(1U, signal.triggerCount);
 }
 
-} // namespace LogCabin::Event::<anonymous>
-} // namespace LogCabin::Event
-} // namespace LogCabin
+} // namespace LibLogCabin::Event::<anonymous>
+} // namespace LibLogCabin::Event
+} // namespace LibLogCabin

@@ -18,12 +18,12 @@
  * This file contains declarations useful to all LogCabin RPCs.
  */
 
-#ifndef LOGCABIN_PROTOCOL_COMMON_H
-#define LOGCABIN_PROTOCOL_COMMON_H
+#ifndef LIBLOGCABIN_PROTOCOL_COMMON_H
+#define LIBLOGCABIN_PROTOCOL_COMMON_H
 
 #include <cstdint>
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Protocol {
 namespace Common {
 
@@ -102,8 +102,8 @@ enum {
 };
 }
 
-} // namespace LogCabin::Protocol::Common
-} // namespace LogCabin::Protocol
-} // namespace LogCabin
+} // namespace LibLogCabin::Protocol::Common
+} // namespace LibLogCabin::Protocol
+} // namespace LibLogCabin
 
-#endif // LOGCABIN_PROTOCOL_COMMON_H
+#endif // LIBLOGCABIN_PROTOCOL_COMMON_H

@@ -25,8 +25,8 @@
  * Utilities for dealing with protocol buffers.
  */
 
-#ifndef LOGCABIN_CORE_PROTOBUF_H
-#define LOGCABIN_CORE_PROTOBUF_H
+#ifndef LIBLOGCABIN_CORE_PROTOBUF_H
+#define LIBLOGCABIN_CORE_PROTOBUF_H
 
 namespace google {
 namespace protobuf {
@@ -53,7 +53,7 @@ bool operator!=(const std::string& a, const Message& b);
 } // namespace google::protobuf
 } // namespace google
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace ProtoBuf {
 
@@ -62,7 +62,7 @@ namespace Internal {
 /// Helper for fromString template.
 void fromString(const std::string& str, google::protobuf::Message& protoBuf);
 
-} // namespace LogCabin::ProtoBuf::Internal
+} // namespace LibLogCabin::ProtoBuf::Internal
 
 /**
  * Create a protocol buffer message form a text format.
@@ -197,8 +197,8 @@ struct OutputStream {
     virtual void writeRaw(const void* data, uint64_t length) = 0;
 };
 
-} // namespace LogCabin::Core::ProtoBuf
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::ProtoBuf
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_CORE_PROTOBUF_H */
+#endif /* LIBLOGCABIN_CORE_PROTOBUF_H */

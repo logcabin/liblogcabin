@@ -19,7 +19,7 @@
 #include "Event/Loop.h"
 #include "Event/Timer.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Event {
 namespace {
 
@@ -143,6 +143,6 @@ TEST(EventLoopTest, exit) {
     thread.join();
 }
 
-} // namespace LogCabin::Event::<anonymous>
-} // namespace LogCabin::Event
-} // namespace LogCabin
+} // namespace LibLogCabin::Event::<anonymous>
+} // namespace LibLogCabin::Event
+} // namespace LibLogCabin

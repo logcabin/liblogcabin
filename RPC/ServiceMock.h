@@ -22,10 +22,10 @@
 #include "RPC/Service.h"
 #include "RPC/ServerRPC.h"
 
-#ifndef LOGCABIN_RPC_SERVICEMOCK_H
-#define LOGCABIN_RPC_SERVICEMOCK_H
+#ifndef LIBLOGCABIN_RPC_SERVICEMOCK_H
+#define LIBLOGCABIN_RPC_SERVICEMOCK_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 /**
@@ -187,7 +187,7 @@ class ServiceMock : public RPC::Service {
     std::queue<Expected> responseQueue;
 };
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_RPC_SERVICEMOCK_H */
+#endif /* LIBLOGCABIN_RPC_SERVICEMOCK_H */

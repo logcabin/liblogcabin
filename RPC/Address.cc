@@ -29,7 +29,7 @@
 #include "Core/StringUtil.h"
 #include "RPC/Address.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 Address::Address(const std::string& str, uint16_t defaultPort)
@@ -221,5 +221,5 @@ Address::refresh(TimePoint timeout)
 }
 
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

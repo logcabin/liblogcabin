@@ -15,7 +15,7 @@
 
 #include "Core/Buffer.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 
 Buffer::Buffer()
@@ -82,5 +82,5 @@ Buffer::reset()
     deleter = NULL;
 }
 
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

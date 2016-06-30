@@ -20,7 +20,7 @@
 #include "Event/Loop.h"
 #include "Event/Timer.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Event {
 namespace {
 
@@ -168,6 +168,6 @@ TEST_F(EventTimerTest, isScheduled) {
     // Tested sufficiently in schedule, deschedule tests.
 }
 
-} // namespace LogCabin::Event::<anonymous>
-} // namespace LogCabin::Event
-} // namespace LogCabin
+} // namespace LibLogCabin::Event::<anonymous>
+} // namespace LibLogCabin::Event
+} // namespace LibLogCabin

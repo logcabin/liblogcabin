@@ -19,7 +19,7 @@
 #include "Core/Debug.h"
 #include "RPC/Address.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 namespace {
 
@@ -218,6 +218,6 @@ TEST(RPCAddressTest, refresh_IPv6) {
               << "any address. " << disclaimer;
 }
 
-} // namespace LogCabin::RPC::<anonymous>
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC::<anonymous>
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

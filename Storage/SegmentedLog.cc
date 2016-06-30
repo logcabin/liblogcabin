@@ -35,7 +35,7 @@
 #include "Storage/FilesystemUtil.h"
 #include "Storage/SegmentedLog.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Storage {
 
 namespace FS = FilesystemUtil;
@@ -1358,5 +1358,5 @@ SegmentedLog::segmentPreparerMain()
     }
 }
 
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin

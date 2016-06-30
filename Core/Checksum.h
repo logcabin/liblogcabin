@@ -22,10 +22,10 @@
 #include <string>
 #include <vector>
 
-#ifndef LOGCABIN_CORE_CHECKSUM_H
-#define LOGCABIN_CORE_CHECKSUM_H
+#ifndef LIBLOGCABIN_CORE_CHECKSUM_H
+#define LIBLOGCABIN_CORE_CHECKSUM_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace Checksum {
 
@@ -136,8 +136,8 @@ std::string
 verify(const char* checksum,
        std::initializer_list<std::pair<const void*, uint64_t>> data);
 
-} // namespace LogCabin::Core::Checksum
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::Checksum
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_CORE_CHECKSUM_H */
+#endif /* LIBLOGCABIN_CORE_CHECKSUM_H */

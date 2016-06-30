@@ -17,7 +17,7 @@
 
 #include "RPC/OpaqueServerRPC.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 namespace {
 
@@ -33,6 +33,6 @@ TEST(RPCOpaqueServerRPCTest, constructor_default)
 }
 
 
-} // namespace LogCabin::RPC::<anonymous>
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC::<anonymous>
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

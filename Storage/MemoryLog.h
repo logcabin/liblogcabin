@@ -20,10 +20,10 @@
 
 #include "Storage/Log.h"
 
-#ifndef LOGCABIN_STORAGE_MEMORYLOG_H
-#define LOGCABIN_STORAGE_MEMORYLOG_H
+#ifndef LIBLOGCABIN_STORAGE_MEMORYLOG_H
+#define LIBLOGCABIN_STORAGE_MEMORYLOG_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Storage {
 
 // forward declaration
@@ -71,7 +71,7 @@ class MemoryLog : public Log {
     std::unique_ptr<Sync> currentSync;
 };
 
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_STORAGE_MEMORYLOG_H */
+#endif /* LIBLOGCABIN_STORAGE_MEMORYLOG_H */

@@ -29,7 +29,7 @@
 #include "Event/Loop.h"
 #include "RPC/MessageSocket.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 namespace {
@@ -403,5 +403,5 @@ MessageSocket::writable()
     }
 }
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

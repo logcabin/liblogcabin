@@ -22,10 +22,10 @@
 #include <string>
 #include <vector>
 
-#ifndef LOGCABIN_STORAGE_FILESYSTEMUTIL_H
-#define LOGCABIN_STORAGE_FILESYSTEMUTIL_H
+#ifndef LIBLOGCABIN_STORAGE_FILESYSTEMUTIL_H
+#define LIBLOGCABIN_STORAGE_FILESYSTEMUTIL_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Storage {
 namespace FilesystemUtil {
 
@@ -361,8 +361,8 @@ class FileContents {
     FileContents& operator=(const FileContents&) = delete;
 };
 
-} // namespace LogCabin::Storage::FilesystemUtil
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage::FilesystemUtil
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_STORAGE_FILESYSTEMUTIL_H */
+#endif /* LIBLOGCABIN_STORAGE_FILESYSTEMUTIL_H */

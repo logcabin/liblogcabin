@@ -29,7 +29,7 @@
 
 #include "Core/StringUtil.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace StringUtil {
 
@@ -186,6 +186,6 @@ trim(const std::string& original)
 }
 
 
-} // namespace LogCabin::Core::StringUtil
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::StringUtil
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

@@ -20,7 +20,7 @@
 
 #include "Core/STLUtil.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace STLUtil {
 namespace {
@@ -70,7 +70,7 @@ TEST(CoreSTLUtilTest, getItems) {
               getItems(digits));
 }
 
-} // namespace LogCabin::Core::STLUtil::<anonymous>
-} // namespace LogCabin::Core::STLUtil
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::STLUtil::<anonymous>
+} // namespace LibLogCabin::Core::STLUtil
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

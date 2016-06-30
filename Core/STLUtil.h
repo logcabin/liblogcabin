@@ -16,10 +16,10 @@
 #include <algorithm>
 #include <vector>
 
-#ifndef LOGCABIN_CORE_STLUTIL_H
-#define LOGCABIN_CORE_STLUTIL_H
+#ifndef LIBLOGCABIN_CORE_STLUTIL_H
+#define LIBLOGCABIN_CORE_STLUTIL_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace STLUtil {
 
@@ -79,8 +79,8 @@ getItems(const Map& map)
     return items;
 }
 
-} // namespace LogCabin::Core::STLUtil
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::STLUtil
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_CORE_STLUTIL_H */
+#endif /* LIBLOGCABIN_CORE_STLUTIL_H */

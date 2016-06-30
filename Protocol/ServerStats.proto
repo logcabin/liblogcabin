@@ -12,7 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-package LogCabin.Protocol;
+package LibLogCabin.Protocol;
 
 /**
  * The format that Core::RollingStat serializes into.
@@ -185,4 +185,3 @@ message ServerStats {
     optional StateMachine state_machine = 13;
 
 };
-

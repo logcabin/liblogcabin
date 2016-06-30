@@ -27,7 +27,7 @@
 #include "Protocol/Common.h"
 #include "RPC/ClientSession.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 namespace {
@@ -290,7 +290,7 @@ ClientSession::ClientSession(Event::Loop& eventLoop,
     if (waiting) {
         // This is a pretty heavy-weight method of watching a file descriptor
         // for a given period of time. On the other hand, it's only a few lines
-        // of code with the LogCabin::Event classes, so it's easier for now.
+        // of code with the LibLogCabin::Event classes, so it's easier for now.
         Event::Loop loop;
         FileNotifier fileNotifier(loop, fd, Event::File::CALLER_CLOSES_FD);
         TimerNotifier timerNotifier(loop);
@@ -521,5 +521,5 @@ ClientSession::wait(const OpaqueClientRPC& rpc, TimePoint timeout)
     }
 }
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

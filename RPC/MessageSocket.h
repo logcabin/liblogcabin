@@ -21,10 +21,10 @@
 #include "Core/Mutex.h"
 #include "Event/File.h"
 
-#ifndef LOGCABIN_RPC_MESSAGESOCKET_H
-#define LOGCABIN_RPC_MESSAGESOCKET_H
+#ifndef LIBLOGCABIN_RPC_MESSAGESOCKET_H
+#define LIBLOGCABIN_RPC_MESSAGESOCKET_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 
 // forward declaration
 namespace Event {
@@ -357,7 +357,7 @@ class MessageSocket {
 
 }; // class MessageSocket
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_RPC_MESSAGESOCKET_H */
+#endif /* LIBLOGCABIN_RPC_MESSAGESOCKET_H */

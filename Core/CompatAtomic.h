@@ -13,8 +13,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef LOGCABIN_CORE_COMPATATOMIC_H
-#define LOGCABIN_CORE_COMPATATOMIC_H
+#ifndef LIBLOGCABIN_CORE_COMPATATOMIC_H
+#define LIBLOGCABIN_CORE_COMPATATOMIC_H
 
 // std::atomic header file renamed in gcc 4.5.
 // Clang uses <atomic> but has defines like gcc 4.2.
@@ -24,4 +24,4 @@
 #include <atomic>
 #endif
 
-#endif // LOGCABIN_CORE_COMPATATOMIC_H
+#endif // LIBLOGCABIN_CORE_COMPATATOMIC_H

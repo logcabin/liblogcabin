@@ -22,7 +22,7 @@
 #include "Core/StringUtil.h"
 #include "Storage/Layout.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Storage {
 
 namespace FS = FilesystemUtil;
@@ -113,5 +113,5 @@ Layout::initTemporary(uint64_t serverId)
     removeAllFiles = true;
 }
 
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin

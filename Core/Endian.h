@@ -16,8 +16,8 @@
 #include <cinttypes>
 #include <endian.h>
 
-#ifndef LOGCABIN_CORE_ENDIAN_H
-#define LOGCABIN_CORE_ENDIAN_H
+#ifndef LIBLOGCABIN_CORE_ENDIAN_H
+#define LIBLOGCABIN_CORE_ENDIAN_H
 
 // RHEL6 is missing this cast, which affects htobe16 and
 // be16toh.
@@ -27,4 +27,4 @@
      (uint16_t((((x) >> 8) & 0xff) | (((x) & 0xff) << 8)))
 #endif
 
-#endif /* LOGCABIN_CORE_ENDIAN_H */
+#endif /* LIBLOGCABIN_CORE_ENDIAN_H */

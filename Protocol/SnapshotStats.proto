@@ -12,7 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-package LogCabin.Raft.SnapshotStats;
+package LibLogCabin.Raft.SnapshotStats;
 
 /**
  * Statistics used in deciding when to take a snapshot.

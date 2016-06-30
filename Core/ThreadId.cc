@@ -19,7 +19,7 @@
 #include "Core/ThreadId.h"
 #include "Core/StringUtil.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace ThreadId {
 namespace Internal {
@@ -59,7 +59,7 @@ assign()
     ++nextId;
 }
 
-} // namespace LogCabin::Core::ThreadId::Internal
+} // namespace LibLogCabin::Core::ThreadId::Internal
 
 /**
  * Return a unique identifier associated with this thread.  The
@@ -101,6 +101,6 @@ getName()
         return it->second;
 }
 
-} // namespace LogCabin::Core::ThreadId
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::ThreadId
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

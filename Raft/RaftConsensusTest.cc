@@ -34,7 +34,7 @@
 #include "Storage/SnapshotFile.h"
 #include "include/LogCabin/Debug.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Server {
 namespace {
 
@@ -794,7 +794,7 @@ TEST_F(ServerRaftConsensusTest, getNextEntry_snapshot)
     consensus->log->truncatePrefix(2);
 
     // expect warning
-    LogCabin::Core::Debug::setLogPolicy({
+    LibLogCabin::Core::Debug::setLogPolicy({
         {"Server/RaftConsensus.cc", "ERROR"}
     });
     RaftConsensus::Entry e1 = consensus->getNextEntry(0);
@@ -1206,11 +1206,11 @@ TEST_F(ServerRaftConsensusTest, handleInstallSnapshot)
     EXPECT_TRUE(bool(consensus->snapshotWriter));
 
     // stale packet: expect warning
-    LogCabin::Core::Debug::setLogPolicy({
+    LibLogCabin::Core::Debug::setLogPolicy({
         {"Server/RaftConsensus.cc", "ERROR"}
     });
     consensus->handleInstallSnapshot(request, response);
-    LogCabin::Core::Debug::setLogPolicy({
+    LibLogCabin::Core::Debug::setLogPolicy({
         {"Server/RaftConsensus.cc", "WARNING"}
     });
     EXPECT_EQ("term: 10 "
@@ -1263,7 +1263,7 @@ TEST_F(ServerRaftConsensusTest, handleInstallSnapshot_byteOffsetHigh)
     request.set_done(false);
 
     // expect warnings
-    LogCabin::Core::Debug::setLogPolicy({
+    LibLogCabin::Core::Debug::setLogPolicy({
         {"Server/RaftConsensus.cc", "ERROR"}
     });
 
@@ -1704,12 +1704,12 @@ class StateMachineUpdaterThreadMainHelper {
             peer.haveStateMachineSupportedVersions = true;
             peer.minStateMachineVersion = 4;
             peer.maxStateMachineVersion = 9;
-            LogCabin::Core::Debug::setLogPolicy({
+            LibLogCabin::Core::Debug::setLogPolicy({
                 {"", "SILENT"}
             });
         // leader and all info but servers don't overlap: go to sleep
         } else if (iter == 3) {
-            LogCabin::Core::Debug::setLogPolicy({
+            LibLogCabin::Core::Debug::setLogPolicy({
                 {"", "WARNING"}
             });
             consensus.setSupportedStateMachineVersions(1, 4);
@@ -1728,12 +1728,12 @@ class StateMachineUpdaterThreadMainHelper {
                       "  requested_version: 4 "
                       "}", command);
             consensus.stepDown(7);
-            LogCabin::Core::Debug::setLogPolicy({
+            LibLogCabin::Core::Debug::setLogPolicy({
                 {"", "ERROR"}
             });
         // replicateEntry failed because lost leadership: issue warning
         } else if (iter == 5) {
-            LogCabin::Core::Debug::setLogPolicy({
+            LibLogCabin::Core::Debug::setLogPolicy({
                 {"", "WARNING"}
             });
             EXPECT_EQ(3U, consensus.log->getLastLogIndex());
@@ -2286,7 +2286,7 @@ TEST_F(ServerRaftConsensusPATest, appendEntries_rpcFailed)
 {
     peerService->closeSession(Protocol::Raft::OpCode::APPEND_ENTRIES, request);
     // expect warning
-    LogCabin::Core::Debug::setLogPolicy({
+    LibLogCabin::Core::Debug::setLogPolicy({
         {"Server/RaftConsensus.cc", "ERROR"}
     });
     std::unique_lock<Mutex> lockGuard(consensus->mutex);
@@ -2516,7 +2516,7 @@ TEST_F(ServerRaftConsensusPSTest, installSnapshot_rpcFailed)
     peerService->closeSession(Protocol::Raft::OpCode::INSTALL_SNAPSHOT,
                               request);
     // expect warning
-    LogCabin::Core::Debug::setLogPolicy({
+    LibLogCabin::Core::Debug::setLogPolicy({
         {"Server/RaftConsensus.cc", "ERROR"}
     });
     std::unique_lock<Mutex> lockGuard(consensus->mutex);
@@ -2926,7 +2926,7 @@ TEST_F(ServerRaftConsensusPTest, requestVote_rpcFailed)
 
     peerService->closeSession(Protocol::Raft::OpCode::REQUEST_VOTE, request);
     // expect warning
-    LogCabin::Core::Debug::setLogPolicy({
+    LibLogCabin::Core::Debug::setLogPolicy({
         {"Server/RaftConsensus.cc", "ERROR"}
     });
     std::unique_lock<Mutex> lockGuard(consensus->mutex);
@@ -3273,6 +3273,6 @@ TEST_F(ServerRaftConsensusTest, regression_nextIndexForNewServer)
 }
 
 
-} // namespace LogCabin::Server::<anonymous>
-} // namespace LogCabin::Server
-} // namespace LogCabin
+} // namespace LibLogCabin::Server::<anonymous>
+} // namespace LibLogCabin::Server
+} // namespace LibLogCabin

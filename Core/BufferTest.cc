@@ -17,7 +17,7 @@
 
 #include "Core/Buffer.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace {
 
@@ -126,6 +126,6 @@ TEST_F(CoreBufferTest, reset) {
     EXPECT_EQ(1U, deleterCount);
 }
 
-} // namespace LogCabin::Core::<anonymous>
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::<anonymous>
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

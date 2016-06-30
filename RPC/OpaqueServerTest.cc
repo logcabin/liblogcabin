@@ -24,7 +24,7 @@
 #include "RPC/OpaqueServer.h"
 #include "RPC/OpaqueServerRPC.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 namespace {
 
@@ -170,6 +170,6 @@ TEST_F(RPCOpaqueServerTest, bind_portTaken) {
         << error;
 }
 
-} // namespace LogCabin::RPC::<anonymous>
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC::<anonymous>
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

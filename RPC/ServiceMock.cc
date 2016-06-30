@@ -18,7 +18,7 @@
 #include "Core/ProtoBuf.h"
 #include "RPC/ServiceMock.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 ServiceMock::Expected::Expected(uint16_t opCode,
@@ -87,5 +87,5 @@ ServiceMock::expect(uint16_t opCode,
     responseQueue.emplace(opCode, Core::ProtoBuf::copy(request), response);
 }
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

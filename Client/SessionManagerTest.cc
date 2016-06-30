@@ -27,7 +27,7 @@
 #include "RPC/Server.h"
 #include "RPC/ServiceMock.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Client {
 namespace {
 
@@ -143,6 +143,6 @@ TEST_F(ClientSessionManagerTest, createSession_verifyBad)
     EXPECT_EQ("foo", clusterUUID.getOrDefault());
 }
 
-} // namespace LogCabin::Client::<anonymous>
-} // namespace LogCabin::Client
-} // namespace LogCabin
+} // namespace LibLogCabin::Client::<anonymous>
+} // namespace LibLogCabin::Client
+} // namespace LibLogCabin

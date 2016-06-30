@@ -16,10 +16,10 @@
 #include <cinttypes>
 #include <string>
 
-#ifndef LOGCABIN_CORE_THREADID_H
-#define LOGCABIN_CORE_THREADID_H
+#ifndef LIBLOGCABIN_CORE_THREADID_H
+#define LIBLOGCABIN_CORE_THREADID_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 
 /**
@@ -58,8 +58,8 @@ void setName(const std::string& name);
  */
 std::string getName();
 
-} // namespace LogCabin::Core::ThreadId
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::ThreadId
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
-#endif  // LOGCABIN_CORE_THREADID_H
+#endif  // LIBLOGCABIN_CORE_THREADID_H

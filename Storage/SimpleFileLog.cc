@@ -29,7 +29,7 @@
 #include "Storage/FilesystemUtil.h"
 #include "Storage/SimpleFileLog.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Storage {
 
 using FilesystemUtil::File;
@@ -361,5 +361,5 @@ SimpleFileLog::read(const std::string& entryPath) const
     return entry;
 }
 
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin

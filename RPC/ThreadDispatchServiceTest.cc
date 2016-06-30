@@ -19,7 +19,7 @@
 #include "Core/CompatAtomic.h"
 #include "RPC/ThreadDispatchService.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 namespace {
 
@@ -96,6 +96,6 @@ TEST_F(RPCThreadDispatchServiceTest, workerMain)
     // most of this is tested already in the other tests
 }
 
-} // namespace LogCabin::RPC::<anonymous>
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC::<anonymous>
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

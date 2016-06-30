@@ -17,7 +17,7 @@
 #include "Core/ProtoBuf.h"
 #include "RPC/ServerRPC.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 
 using RPC::Protocol::RequestHeaderPrefix;
@@ -195,5 +195,5 @@ ServerRPC::reject(RPC::Protocol::Status status)
 }
 
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

@@ -24,7 +24,7 @@
 #include "Core/Debug.h"
 #include "Core/Time.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace Time {
 
@@ -245,9 +245,9 @@ SteadyTimeConverter::unixNanos(SteadyClock::time_point when)
         convert(when).time_since_epoch()).count();
 }
 
-} // namespace LogCabin::Core::Time
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::Time
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
 namespace std {
 

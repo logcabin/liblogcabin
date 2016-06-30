@@ -35,7 +35,7 @@
 #include "RPC/Service.h"
 #include "RPC/ThreadDispatchService.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace {
 
 typedef RPC::OpaqueClientRPC::TimePoint TimePoint;
@@ -167,5 +167,5 @@ TEST_F(RPCClientServerTest, timeout_TimingSensitive) {
 
 }
 
-} // namespace LogCabin::<anonymous>
-} // namespace LogCabin
+} // namespace LibLogCabin::<anonymous>
+} // namespace LibLogCabin

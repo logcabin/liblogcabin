@@ -20,10 +20,10 @@
 #include "build/Protocol/Raft.pb.h"
 #include "build/Protocol/RaftLogMetadata.pb.h"
 
-#ifndef LOGCABIN_STORAGE_LOG_H
-#define LOGCABIN_STORAGE_LOG_H
+#ifndef LIBLOGCABIN_STORAGE_LOG_H
+#define LIBLOGCABIN_STORAGE_LOG_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 
 // forward declaration
 namespace Protocol {
@@ -208,7 +208,7 @@ class Log {
     Log& operator=(const Log&) = delete;
 };
 
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_STORAGE_LOG_H */
+#endif /* LIBLOGCABIN_STORAGE_LOG_H */

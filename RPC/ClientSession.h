@@ -27,10 +27,10 @@
 #include "RPC/OpaqueClientRPC.h"
 #include "RPC/MessageSocket.h"
 
-#ifndef LOGCABIN_RPC_CLIENTSESSION_H
-#define LOGCABIN_RPC_CLIENTSESSION_H
+#ifndef LIBLOGCABIN_RPC_CLIENTSESSION_H
+#define LIBLOGCABIN_RPC_CLIENTSESSION_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 
 // forward declaration
 namespace Event {
@@ -359,7 +359,7 @@ class ClientSession {
     ClientSession& operator=(const ClientSession&) = delete;
 }; // class ClientSession
 
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_RPC_CLIENTSESSION_H */
+#endif /* LIBLOGCABIN_RPC_CLIENTSESSION_H */

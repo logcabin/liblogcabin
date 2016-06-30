@@ -27,7 +27,7 @@
 #include "Protocol/Common.h"
 #include "RPC/ClientSession.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 namespace {
 
@@ -103,7 +103,7 @@ TEST_F(RPCClientSessionTest, handleReceivedMessage) {
     EXPECT_FALSE(session->timer.isScheduled());
 
     // Already ready
-    LogCabin::Core::Debug::setLogPolicy({{"", "ERROR"}});
+    LibLogCabin::Core::Debug::setLogPolicy({{"", "ERROR"}});
     session->messageSocket->handler.handleReceivedMessage(1, buf("c"));
     EXPECT_EQ("b", str(session->responses[1]->reply));
     EXPECT_EQ(0U, session->numActiveRPCs);
@@ -429,6 +429,6 @@ TEST_F(RPCClientSessionTest, waitTimeout_futureThenOk) {
 }
 
 
-} // namespace LogCabin::RPC::<anonymous>
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC::<anonymous>
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

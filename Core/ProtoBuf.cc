@@ -69,7 +69,7 @@ operator!=(const std::string& a, const Message& b)
 } // namespace google::protobuf
 } // namespace google
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace ProtoBuf {
 
@@ -84,7 +84,7 @@ fromString(const std::string& str, google::protobuf::Message& protoBuf)
     google::protobuf::TextFormat::ParseFromString(str, &protoBuf);
 }
 
-} // namespace LogCabin::ProtoBuf::Internal
+} // namespace LibLogCabin::ProtoBuf::Internal
 
 std::string
 dumpString(const google::protobuf::Message& protoBuf,
@@ -173,6 +173,6 @@ serialize(const google::protobuf::Message& from,
 }
 
 
-} // namespace LogCabin::Core::ProtoBuf
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::ProtoBuf
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

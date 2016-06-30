@@ -13,8 +13,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef LOGCABIN_CORE_ROLLINGSTAT_H
-#define LOGCABIN_CORE_ROLLINGSTAT_H
+#ifndef LIBLOGCABIN_CORE_ROLLINGSTAT_H
+#define LIBLOGCABIN_CORE_ROLLINGSTAT_H
 
 #include <cinttypes>
 #include <iostream>
@@ -22,7 +22,7 @@
 
 #include "Core/Time.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 
 // forward declaration
 namespace Protocol {
@@ -156,7 +156,7 @@ class RollingStat {
 
 };
 
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_CORE_ROLLINGSTAT_H */
+#endif /* LIBLOGCABIN_CORE_ROLLINGSTAT_H */

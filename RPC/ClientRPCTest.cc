@@ -27,11 +27,11 @@
 #include "RPC/Protocol.h"
 #include "RPC/ServerRPC.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace RPC {
 namespace {
 
-namespace ProtocolCommon = LogCabin::Protocol::Common;
+namespace ProtocolCommon = LibLogCabin::Protocol::Common;
 typedef ClientRPC::TimePoint TimePoint;
 
 class MyServerHandler : public OpaqueServer::Handler {
@@ -113,7 +113,7 @@ class RPCClientRPCTest : public ::testing::Test {
     MyServerHandler rpcHandler;
     OpaqueServer server;
     std::shared_ptr<ClientSession> session;
-    LogCabin::ProtoBuf::TestMessage payload;
+    LibLogCabin::ProtoBuf::TestMessage payload;
 };
 
 TEST_F(RPCClientRPCTest, constructor) {
@@ -133,7 +133,7 @@ TEST_F(RPCClientRPCTest, constructor) {
     EXPECT_EQ(2U, header.service);
     EXPECT_EQ(3U, header.serviceSpecificErrorVersion);
     EXPECT_EQ(4U, header.opCode);
-    LogCabin::ProtoBuf::TestMessage actual;
+    LibLogCabin::ProtoBuf::TestMessage actual;
     EXPECT_TRUE(Core::ProtoBuf::parse(
         rpcHandler.lastRequest, actual,
         sizeof(Protocol::RequestHeaderVersion1)));
@@ -185,12 +185,12 @@ TEST_F(RPCClientRPCTest, waitForReply_ok) {
     ClientRPC rpc(session, 2, 3, 4, payload);
     EXPECT_EQ(ClientRPC::Status::OK,
               rpc.waitForReply(NULL, NULL, TimePoint::max()));
-    LogCabin::ProtoBuf::TestMessage actual;
+    LibLogCabin::ProtoBuf::TestMessage actual;
     EXPECT_EQ(ClientRPC::Status::OK,
               rpc.waitForReply(&actual, NULL, TimePoint::max()));
     EXPECT_EQ(payload, actual);
     // should be able to call waitForReply multiple times
-    LogCabin::ProtoBuf::TestMessage actual2;
+    LibLogCabin::ProtoBuf::TestMessage actual2;
     EXPECT_EQ(ClientRPC::Status::OK,
               rpc.waitForReply(&actual2, NULL, TimePoint::max()));
     EXPECT_EQ(payload, actual2);
@@ -201,12 +201,12 @@ TEST_F(RPCClientRPCTest, waitForReply_serviceSpecificError) {
     ClientRPC rpc(session, 2, 3, 4, payload);
     EXPECT_EQ(ClientRPC::Status::SERVICE_SPECIFIC_ERROR,
               rpc.waitForReply(NULL, NULL, TimePoint::max()));
-    LogCabin::ProtoBuf::TestMessage actual;
+    LibLogCabin::ProtoBuf::TestMessage actual;
     EXPECT_EQ(ClientRPC::Status::SERVICE_SPECIFIC_ERROR,
               rpc.waitForReply(NULL, &actual, TimePoint::max()));
     EXPECT_EQ(payload, actual);
     // should be able to call waitForReply multiple times
-    LogCabin::ProtoBuf::TestMessage actual2;
+    LibLogCabin::ProtoBuf::TestMessage actual2;
     EXPECT_EQ(ClientRPC::Status::SERVICE_SPECIFIC_ERROR,
               rpc.waitForReply(NULL, &actual2, TimePoint::max()));
     EXPECT_EQ(payload, actual2);
@@ -251,6 +251,6 @@ TEST_F(RPCClientRPCTest, waitForReply_unknownStatus) {
                  }, "Unknown status");
 }
 
-} // namespace LogCabin::RPC::<anonymous>
-} // namespace LogCabin::RPC
-} // namespace LogCabin
+} // namespace LibLogCabin::RPC::<anonymous>
+} // namespace LibLogCabin::RPC
+} // namespace LibLogCabin

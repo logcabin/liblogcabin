@@ -17,7 +17,7 @@
 
 #include "Core/Checksum.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace Checksum {
 namespace {
@@ -118,7 +118,7 @@ TEST_F(CoreChecksumTest, verify) {
               verify("nonsense:358", "test", 5));
 }
 
-} // namespace LogCabin::Core::Checksum::<anonymous>
-} // namespace LogCabin::Core::Checksum
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::Checksum::<anonymous>
+} // namespace LibLogCabin::Core::Checksum
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

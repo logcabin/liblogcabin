@@ -13,12 +13,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef LOGCABIN_STORAGE_LAYOUT_H
-#define LOGCABIN_STORAGE_LAYOUT_H
+#ifndef LIBLOGCABIN_STORAGE_LAYOUT_H
+#define LIBLOGCABIN_STORAGE_LAYOUT_H
 
 #include "Storage/FilesystemUtil.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 
 // forward declaration
 namespace Core {
@@ -121,7 +121,7 @@ class Layout {
     Layout& operator=(const Layout& other) = delete;
 };
 
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_STORAGE_LAYOUT_H */
+#endif /* LIBLOGCABIN_STORAGE_LAYOUT_H */

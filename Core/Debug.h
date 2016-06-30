@@ -20,10 +20,10 @@
 
 #include "include/liblogcabin/Debug.h"
 
-#ifndef LOGCABIN_CORE_DEBUG_H
-#define LOGCABIN_CORE_DEBUG_H
+#ifndef LIBLOGCABIN_CORE_DEBUG_H
+#define LIBLOGCABIN_CORE_DEBUG_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace Debug {
 
@@ -80,9 +80,9 @@ __attribute__((format(printf, 5, 6)));
  */
 extern std::string processName;
 
-} // namespace LogCabin::Core::Debug
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::Debug
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
 
 /**
  * Unconditionally log the given message to stderr.
@@ -96,8 +96,8 @@ extern std::string processName;
  *      The arguments to the format string, as in printf.
  */
 #define LOG(level, format, ...) do { \
-    if (::LogCabin::Core::Debug::isLogging(level, __FILE__)) { \
-        ::LogCabin::Core::Debug::log(level, \
+    if (::LibLogCabin::Core::Debug::isLogging(level, __FILE__)) { \
+        ::LibLogCabin::Core::Debug::log(level, \
             __FILE__, __LINE__, __FUNCTION__, \
             format "\n", ##__VA_ARGS__); \
     } \
@@ -130,27 +130,27 @@ extern std::string processName;
  *      The arguments to the format string, as in printf.
  */
 #define ERROR(format, ...) \
-    LOG((::LogCabin::Core::Debug::LogLevel::ERROR), format, ##__VA_ARGS__)
+    LOG((::LibLogCabin::Core::Debug::LogLevel::ERROR), format, ##__VA_ARGS__)
 
 /**
  * Log a WARNING message.
  * \copydetails ERROR
  */
 #define WARNING(format, ...) \
-    LOG((::LogCabin::Core::Debug::LogLevel::WARNING), format, ##__VA_ARGS__)
+    LOG((::LibLogCabin::Core::Debug::LogLevel::WARNING), format, ##__VA_ARGS__)
 
 /**
  * Log a NOTICE message.
  * \copydetails ERROR
  */
 #define NOTICE(format, ...) \
-    LOG((::LogCabin::Core::Debug::LogLevel::NOTICE), format, ##__VA_ARGS__)
+    LOG((::LibLogCabin::Core::Debug::LogLevel::NOTICE), format, ##__VA_ARGS__)
 
 /**
  * Log a VERBOSE message.
  * \copydetails ERROR
  */
 #define VERBOSE(format, ...) \
-    LOG((::LogCabin::Core::Debug::LogLevel::VERBOSE), format, ##__VA_ARGS__)
+    LOG((::LibLogCabin::Core::Debug::LogLevel::VERBOSE), format, ##__VA_ARGS__)
 
-#endif /* LOGCABIN_CORE_DEBUG_H */
+#endif /* LIBLOGCABIN_CORE_DEBUG_H */

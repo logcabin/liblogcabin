@@ -27,7 +27,7 @@
 #include "Storage/Layout.h"
 #include "Storage/SnapshotFile.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Storage {
 namespace SnapshotFile {
 
@@ -259,6 +259,6 @@ Writer::writeRaw(const void* data, uint64_t length)
     *sharedBytesWritten.value += Core::Util::downCast<uint64_t>(r);
 }
 
-} // namespace LogCabin::Storage::SnapshotFile
-} // namespace LogCabin::Storage
-} // namespace LogCabin
+} // namespace LibLogCabin::Storage::SnapshotFile
+} // namespace LibLogCabin::Storage
+} // namespace LibLogCabin

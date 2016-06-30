@@ -37,10 +37,10 @@
 #include "Storage/Log.h"
 #include "Storage/SnapshotFile.h"
 
-#ifndef LOGCABIN_RAFT_RAFTCONSENSUS_H
-#define LOGCABIN_RAFT_RAFTCONSENSUS_H
+#ifndef LIBLOGCABIN_RAFT_RAFTCONSENSUS_H
+#define LIBLOGCABIN_RAFT_RAFTCONSENSUS_H
 
-namespace LogCabin {
+namespace LibLogCabin {
 
 // forward declarations
 namespace RPC {
@@ -86,7 +86,7 @@ extern bool startThreads;
  * Reads the current time. This will refer to the best clock available on our
  * system, which may or may not be monotonic.
  */
-typedef LogCabin::Core::Time::SteadyClock Clock;
+typedef LibLogCabin::Core::Time::SteadyClock Clock;
 
 /**
  * Some point in time relative to the Clock's epoch.
@@ -169,7 +169,7 @@ class Server {
      * diagnostics.
      */
     virtual void
-    updatePeerStats(LogCabin::Protocol::ServerStats_Raft_Peer& peerStats,
+    updatePeerStats(LibLogCabin::Protocol::ServerStats_Raft_Peer& peerStats,
                     Core::Time::SteadyTimeConverter& time) const = 0;
 
     /**
@@ -234,7 +234,7 @@ class LocalServer : public Server {
     bool isCaughtUp() const;
     void scheduleHeartbeat();
     std::ostream& dumpToStream(std::ostream& os) const;
-    void updatePeerStats(LogCabin::Protocol::ServerStats_Raft_Peer& peerStats,
+    void updatePeerStats(LibLogCabin::Protocol::ServerStats_Raft_Peer& peerStats,
                          Core::Time::SteadyTimeConverter& time) const;
     RaftConsensus& consensus;
     /**
@@ -328,7 +328,7 @@ class Peer : public Server {
      */
     void startThread(std::shared_ptr<Peer> self);
     std::ostream& dumpToStream(std::ostream& os) const;
-    void updatePeerStats(LogCabin::Protocol::ServerStats::Raft::Peer& peerStats,
+    void updatePeerStats(LibLogCabin::Protocol::ServerStats::Raft::Peer& peerStats,
                          Core::Time::SteadyTimeConverter& time) const;
 
   private:
@@ -627,7 +627,7 @@ class Configuration {
      * Write the configuration servers' state into the given structure. Used
      * for diagnostics.
      */
-    void updateServerStats(LogCabin::Protocol::ServerStats& serverStats,
+    void updateServerStats(LibLogCabin::Protocol::ServerStats& serverStats,
                            Core::Time::SteadyTimeConverter& time) const;
 
     /**
@@ -1102,8 +1102,8 @@ class RaftConsensus {
      */
     ClientResult
     setConfiguration(
-	    const LogCabin::Protocol::Client::SetConfiguration::Request& request,
-            LogCabin::Protocol::Client::SetConfiguration::Response& response);
+	    const LibLogCabin::Protocol::Client::SetConfiguration::Request& request,
+            LibLogCabin::Protocol::Client::SetConfiguration::Response& response);
 
     /**
      * Register which versions of client commands/behavior the local state
@@ -1153,7 +1153,7 @@ class RaftConsensus {
     /**
      * Add information about the consensus state to the given structure.
      */
-    void updateServerStats(LogCabin::Protocol::ServerStats& serverStats) const;
+    void updateServerStats(LibLogCabin::Protocol::ServerStats& serverStats) const;
 
     /**
      * Print out the contents of this class for debugging purposes.
@@ -1745,7 +1745,7 @@ class RaftConsensus {
     friend class RaftConsensusInternal::Invariants;
 };
 
-} // namespace LogCabin::Raft
-} // namespace LogCabin
+} // namespace LibLogCabin::Raft
+} // namespace LibLogCabin
 
-#endif /* LOGCABIN_RAFT_RAFTCONSENSUS_H */
+#endif /* LIBLOGCABIN_RAFT_RAFTCONSENSUS_H */

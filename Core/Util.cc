@@ -17,7 +17,7 @@
 #include <cstring>
 #include "Core/Util.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 namespace Util {
 
@@ -47,6 +47,6 @@ ThreadInterruptedException::ThreadInterruptedException()
 {
 }
 
-} // namespace LogCabin::Core::Util
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core::Util
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin

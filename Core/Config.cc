@@ -48,7 +48,7 @@
 #include "Core/Config.h"
 #include "Core/StringUtil.h"
 
-namespace LogCabin {
+namespace LibLogCabin {
 namespace Core {
 
 using Core::StringUtil::format;
@@ -304,5 +304,5 @@ Config::readLine(std::istream& is) const
     return line;
 }
 
-} // namespace LogCabin::Core
-} // namespace LogCabin
+} // namespace LibLogCabin::Core
+} // namespace LibLogCabin
