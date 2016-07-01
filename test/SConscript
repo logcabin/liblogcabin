@@ -11,7 +11,7 @@ def SrcToVariant(srcs, variant_dir):
 
     root = str(Dir('#'))
     variant_dir = str(Dir(variant_dir))
-    return [str(src).replace(root, variant_dir) for src in srcs]
+    return ["".join(str(src).rsplit("/src/logcabin/")) for src in srcs]
 
 def GetTestFiles(src_dirs, variant_dir):
     """Find the test files to build in the given source directories.
@@ -20,8 +20,8 @@ def GetTestFiles(src_dirs, variant_dir):
     source copies to be placed in variant_dir of files ending in Test.cc that
     are directly contained in those directories.
     """
-    return Flatten([SrcToVariant(Glob("%s/*Test.cc" % src_dir) +
-                                 Glob("%s/*Mock.cc" % src_dir),
+    return Flatten([SrcToVariant(Glob("#src/liblogcabin/%s/*Test.cc" % src_dir) +
+                                 Glob("#src/liblogcabin/%s/*Mock.cc" % src_dir),
                                  variant_dir=variant_dir)
                     for src_dir in src_dirs])
 
@@ -35,13 +35,13 @@ testrunner = env.Program("test",
              object_files['Event'] +
              object_files['Core'] +
              GetTestFiles([
-                 "#Core",
-                 "#Event",
-                 "#RPC",
-                 "#Protocol",
-                 "#Tree",
-                 "#Client",
-                 "#Storage"
+                 "Core",
+                 "Event",
+                 "RPC",
+                 "Protocol",
+                 "Tree",
+                 "Client",
+                 "Storage"
              ], variant_dir='#build')),
             LIBS = [ "pthread", "protobuf", "rt", "cryptopp" ],
             CPPPATH = env["CPPPATH"] + ["#gtest/include"],

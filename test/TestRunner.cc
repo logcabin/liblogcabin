@@ -18,8 +18,8 @@
 #include <gtest/gtest.h>
 #include <memory>
 
-#include "Core/Debug.h"
-#include "Storage/FilesystemUtil.h"
+#include "liblogcabin/Core/Debug.h"
+#include "liblogcabin/Storage/FilesystemUtil.h"
 
 namespace {
 

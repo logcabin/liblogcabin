@@ -2,6 +2,7 @@ from distutils.version import LooseVersion as Version
 import re
 import sys
 import os
+import shutil
 import subprocess
 
 # Python 2.6 doesn't have subprocess.check_output
@@ -188,6 +189,7 @@ if env["VERBOSE"] == "0":
     env["LINKCOMSTR"] = "Linking $TARGET"
 
 env.Append(CPPPATH = '#')
+env.Append(CPPPATH = '#/build')
 
 # Define protocol buffers builder to simplify SConstruct files
 def Protobuf(env, source):
@@ -201,6 +203,18 @@ def Protobuf(env, source):
     return env.StaticObject(cc,
                             CXXFLAGS = env['PROTOCXXFLAGS'] + ['-Ibuild'])
 env.AddMethod(Protobuf)
+
+def CopySources(env):
+    parent, cur = os.path.split(os.getcwd())
+    srcDir = os.path.join(parent, "..", "..", "src", "liblogcabin", cur)
+    for file in os.listdir(srcDir):
+        fullPath = os.path.join(srcDir, file)
+        if file != "SConscript" and (os.path.isfile(fullPath)):
+           if os.path.exists(os.path.join(os.getcwd(), file)):
+              os.remove(os.path.join(os.getcwd(), file))
+           shutil.copy(fullPath, os.getcwd())
+
+env.AddMethod(CopySources)
 
 def GetNumCPUs():
     if env["NUMCPUS"] != "0":
@@ -219,13 +233,13 @@ object_files = {}
 Export('object_files')
 
 Export('env')
-SConscript('Core/SConscript', variant_dir='build/Core')
-SConscript('Client/SConscript', variant_dir='build/Client')
-SConscript('Event/SConscript', variant_dir='build/Event')
-SConscript('Protocol/SConscript', variant_dir='build/Protocol')
-SConscript('Raft/SConscript', variant_dir='build/Raft')
-SConscript('RPC/SConscript', variant_dir='build/RPC')
-SConscript('Storage/SConscript', variant_dir='build/Storage')
+SConscript('src/liblogcabin/Core/SConscript', variant_dir='build/liblogcabin/Core')
+SConscript('src/liblogcabin/Client/SConscript', variant_dir='build/liblogcabin/Client')
+SConscript('src/liblogcabin/Event/SConscript', variant_dir='build/liblogcabin/Event')
+SConscript('src/liblogcabin/Protocol/SConscript', variant_dir='build/liblogcabin/Protocol')
+SConscript('src/liblogcabin/Raft/SConscript', variant_dir='build/liblogcabin/Raft')
+SConscript('src/liblogcabin/RPC/SConscript', variant_dir='build/liblogcabin/RPC')
+SConscript('src/liblogcabin/Storage/SConscript', variant_dir='build/liblogcabin/Storage')
 SConscript('test/SConscript', variant_dir='build/test')
 
 library = env.StaticLibrary("build/liblogcabin",
