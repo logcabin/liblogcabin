@@ -1,4 +1,5 @@
 *.pyc
+*.o
 /.sconsign.dblite
 /Local.sc
 /Local.sc.bck
