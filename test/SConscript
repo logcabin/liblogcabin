@@ -37,9 +37,9 @@ testrunner = env.Program("test",
              GetTestFiles([
                  "Core",
                  "Event",
+                 "Raft",
                  "RPC",
                  "Protocol",
-                 "Tree",
                  "Client",
                  "Storage"
              ], variant_dir='#build')),

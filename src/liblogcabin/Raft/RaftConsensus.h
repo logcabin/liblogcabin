@@ -17,6 +17,7 @@
 #include <chrono>
 #include <deque>
 #include <functional>
+#include <list>
 #include <memory>
 #include <thread>
 #include <unordered_map>
@@ -988,7 +989,7 @@ class RaftConsensus {
      * \param globals
      *      Handle to LogCabin's top-level objects.
      */
-    explicit RaftConsensus(Core::Config& config, Storage::Log* log = nullptr);
+    explicit RaftConsensus(Core::Config& config, uint64_t serverId = 0UL, Storage::Log* log = nullptr);
 
     /**
      * Destructor.
@@ -1092,6 +1093,11 @@ class RaftConsensus {
      *      log.
      */
     std::pair<ClientResult, uint64_t> replicate(const Core::Buffer& operation);
+
+    /**
+     * Subscribe to receive callbacks for all committed entries in this Raft log.
+     */
+    void subscribeToCommittedEntries(std::function<void(std::vector<Storage::Log::Entry*>&)> callback);
 
     /**
      * Change the cluster's configuration.
@@ -1464,16 +1470,16 @@ class RaftConsensus {
      */
     std::string serverAddresses;
 
+    /**
+     * Main event loop that serves all Raft leader and peers RPC communication.
+     */
+    Event::Loop eventLoop;
+
   private:
     /**
      * Configuration for Raft library
      */
     Core::Config config;
-
-    /**
-     * Main event loop that serves all Raft leader and peers RPC communication.
-     */
-    Event::Loop eventLoop;
 
     /**
      * RPC Server for serving all underlying RPC calls.
@@ -1484,6 +1490,11 @@ class RaftConsensus {
      * Raft service that registers to the RPC server for serving Raft protocol.
      */
     std::shared_ptr<RaftService> raftService;
+
+    /**
+     * List of callbacks to call when entries are committed.
+     */
+    std::list<std::function<void(std::vector<Storage::Log::Entry*>&)>> committedEntriesCallbacks;
 
     /**
      * A unique ID for the cluster that this server may connect to. This is

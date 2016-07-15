@@ -883,7 +883,7 @@ ConfigurationManager::setSnapshot(
 
 std::pair<uint64_t, Raft::Protocol::Configuration>
 ConfigurationManager::getLatestConfigurationAsOf(
-                                        uint64_t lastIncludedIndex) const
+     uint64_t lastIncludedIndex) const
 {
     if (descriptions.empty())
         return {0, {}};
@@ -1025,7 +1025,7 @@ RaftConsensus::Entry::~Entry()
 
 ////////// RaftConsensus //////////
 
-RaftConsensus::RaftConsensus(Core::Config& config, Log* log)
+RaftConsensus::RaftConsensus(Core::Config& config, uint64_t serverId, Log* log)
     : ELECTION_TIMEOUT(
         std::chrono::milliseconds(
             config.read<uint64_t>(
@@ -1055,12 +1055,13 @@ RaftConsensus::RaftConsensus(Core::Config& config, Log* log)
                 "stateMachineUpdaterBackoffMilliseconds",
                 10000)))
     , SOFT_RPC_SIZE_LIMIT(MAX_MESSAGE_LENGTH - 1024)
-    , serverId(0)
+    , serverId(serverId)
     , serverAddresses()
-    , config(config)
     , eventLoop()
+    , config(config)
     , rpcServer(new RPC::Server(eventLoop, MAX_MESSAGE_LENGTH))
     , raftService(new RaftService(*this))
+    , committedEntriesCallbacks()
     , clusterUUID()
     , storageLayout()
     , sessionManager(eventLoop, config)
@@ -1142,16 +1143,15 @@ RaftConsensus::init()
     std::string uuid = config.read("clusterUUID", std::string(""));
     if (!uuid.empty())
         clusterUUID.set(uuid);
-    serverId = config.read<uint64_t>("serverId");
-    Core::Debug::processName = Core::StringUtil::format("%lu", serverId);
 
+    Core::Debug::processName = Core::StringUtil::format("%lu", serverId);
 
     uint32_t maxThreads = config.read<uint16_t>("maxThreads", 16);
     rpcServer->registerService(2, // TODO(tnachen): Do we need other services?
                               raftService,
                               maxThreads);
 
-    std::string listenAddressesStr = config.read<std::string>("listenAddresses");
+    std::string listenAddressesStr = config.read<std::string>("listenAddresses", "127.0.0.1:5254");
     std::vector<std::string> listenAddresses =
         Core::StringUtil::split(listenAddressesStr, ',');
     if (listenAddresses.empty()) {
@@ -1525,7 +1525,8 @@ RaftConsensus::handleAppendEntries(
         }
 
         // Append this and all following entries.
-        std::vector<const Raft::Protocol::Entry*> entries;
+        std::vector<Raft::Protocol::Entry*> entries;
+        std::vector<const Raft::Protocol::Entry*> entries_;
         do {
             const Raft::Protocol::Entry& entry = *it;
             if (entry.type() == Raft::Protocol::EntryType::UNKNOWN) {
@@ -1538,11 +1539,15 @@ RaftConsensus::handleAppendEntries(
                       entry.term(),
                       leaderId);
             }
-            entries.push_back(&entry);
+            entries.push_back(const_cast<Raft::Protocol::Entry*>(&entry));
+            entries_.push_back(&entry);
             ++it;
             ++index;
         } while (it != request.entries().end());
-        append(entries);
+        append(entries_);
+        for (auto callback : committedEntriesCallbacks) {
+          callback(entries);
+        }
         clusterClock.newEpoch(entries.back()->cluster_time());
         break;
     }
@@ -2308,6 +2313,13 @@ RaftConsensus::stepDownThreadMain()
     }
 }
 
+void
+RaftConsensus::subscribeToCommittedEntries(std::function<void(std::vector<Storage::Log::Entry*>&)> callback)
+{
+  committedEntriesCallbacks.push_back(callback);
+}
+
+
 //// RaftConsensus private methods that MUST NOT acquire the lock
 
 void
@@ -2890,6 +2902,11 @@ RaftConsensus::replicateEntry(Log::Entry& entry,
         while (!exiting && currentTerm == entry.term()) {
             if (commitIndex >= index) {
                 VERBOSE("replicate succeeded");
+                for (auto callback : committedEntriesCallbacks) {
+                  std::vector<Storage::Log::Entry*> entries;
+                  entries.emplace_back(&entry);
+                  callback(entries);;
+                }
                 return {ClientResult::SUCCESS, index};
             }
             stateChanged.wait(lockGuard);
