@@ -32,7 +32,7 @@ makeLog(const Core::Config& config,
 {
     const FilesystemUtil::File& parentDir = storageLayout.logDir;
     std::string module =
-        config.read<std::string>("storageModule", "Segmented");
+        config.read<std::string>("storageModule", "SimpleFile");
     std::unique_ptr<Log> log;
     if (module == "Memory") {
         log.reset(new MemoryLog());
