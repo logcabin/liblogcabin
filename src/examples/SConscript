@@ -1,0 +1,15 @@
+Import('env', 'object_files')
+
+testserver = env.Program("test-server-callback",
+            (["TestServerCallback.cc"] +
+             object_files['Raft'] +
+             object_files['Storage'] +
+             object_files['Client'] +
+             object_files['Protocol'] +
+             object_files['RPC'] +
+             object_files['Event'] +
+             object_files['Core']),
+            LIBS = [ "pthread", "protobuf","rt", "cryptopp" ],
+            CPPPATH = env["CPPPATH"] + ["#gtest/include"])
+
+env.Default(testserver)

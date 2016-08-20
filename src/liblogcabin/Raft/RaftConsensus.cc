@@ -24,8 +24,8 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "build/liblogcabin/Raft/SnapshotMetadata.pb.h"
-#include "build/liblogcabin/Protocol/Raft.pb.h"
+#include "liblogcabin/Raft/SnapshotMetadata.pb.h"
+#include "liblogcabin/Protocol/Raft.pb.h"
 
 #include "liblogcabin/Core/Buffer.h"
 #include "liblogcabin/Core/Debug.h"
@@ -34,6 +34,7 @@
 #include "liblogcabin/Core/StringUtil.h"
 #include "liblogcabin/Core/ThreadId.h"
 #include "liblogcabin/Core/Util.h"
+#include "liblogcabin/Raft/ClientService.h"
 #include "liblogcabin/Raft/RaftConsensus.h"
 #include "liblogcabin/RPC/ClientRPC.h"
 #include "liblogcabin/RPC/ClientSession.h"
@@ -1061,6 +1062,7 @@ RaftConsensus::RaftConsensus(Core::Config& config, uint64_t serverId, Log* log)
     , config(config)
     , rpcServer(new RPC::Server(eventLoop, MAX_MESSAGE_LENGTH))
     , raftService(new RaftService(*this))
+    , clientService(new ClientService(*this))
     , committedEntriesCallbacks()
     , clusterUUID()
     , storageLayout()
@@ -1150,6 +1152,9 @@ RaftConsensus::init()
     rpcServer->registerService(2, // TODO(tnachen): Do we need other services?
                               raftService,
                               maxThreads);
+    rpcServer->registerService(1,
+                             clientService,
+                             maxThreads);
 
     std::string listenAddressesStr = config.read<std::string>("listenAddresses", "127.0.0.1:5254");
     std::vector<std::string> listenAddresses =

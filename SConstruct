@@ -240,6 +240,7 @@ SConscript('src/liblogcabin/Protocol/SConscript', variant_dir='build/liblogcabin
 SConscript('src/liblogcabin/Raft/SConscript', variant_dir='build/liblogcabin/Raft')
 SConscript('src/liblogcabin/RPC/SConscript', variant_dir='build/liblogcabin/RPC')
 SConscript('src/liblogcabin/Storage/SConscript', variant_dir='build/liblogcabin/Storage')
+SConscript('src/examples/SConscript', variant_dir='build/examples')
 SConscript('test/SConscript', variant_dir='build/test')
 
 library = env.StaticLibrary("build/liblogcabin",

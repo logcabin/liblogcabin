@@ -57,7 +57,7 @@ class Layout {
     Layout& operator=(Layout&& other);
 
     /**
-     * Initialize in the normal way for a LogCabin server.
+     * Initialize in the normal way for a LibLogCabin Raft service.
      * \param config
      *      Server settings: used to extract storage path.
      * \param serverId

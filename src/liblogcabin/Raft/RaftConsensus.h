@@ -22,10 +22,10 @@
 #include <thread>
 #include <unordered_map>
 
-#include "build/liblogcabin/Protocol/Client.pb.h"
-#include "build/liblogcabin/Protocol/ServerStats.pb.h"
-#include "build/liblogcabin/Protocol/Raft.pb.h"
-#include "build/liblogcabin/Protocol/SnapshotStats.pb.h"
+#include "liblogcabin/Protocol/Client.pb.h"
+#include "liblogcabin/Protocol/ServerStats.pb.h"
+#include "liblogcabin/Protocol/Raft.pb.h"
+#include "liblogcabin/Protocol/SnapshotStats.pb.h"
 #include "liblogcabin/Client/SessionManager.h"
 #include "liblogcabin/Core/CompatAtomic.h"
 #include "liblogcabin/Core/ConditionVariable.h"
@@ -52,6 +52,7 @@ class Server;
 namespace Raft {
 
 // forward declaration
+class ClientService;
 class RaftConsensus;
 class RaftService;
 
@@ -986,8 +987,10 @@ class RaftConsensus {
 
     /**
      * Constructor.
-     * \param globals
-     *      Handle to LogCabin's top-level objects.
+     * \param config
+     *      Configuration for the Raft service
+     * \param serverId
+     *      Server id for the Raft service
      */
     explicit RaftConsensus(Core::Config& config, uint64_t serverId = 0UL, Storage::Log* log = nullptr);
 
@@ -1490,6 +1493,12 @@ class RaftConsensus {
      * Raft service that registers to the RPC server for serving Raft protocol.
      */
     std::shared_ptr<RaftService> raftService;
+
+    /**
+     * Client service that registers to the RPC server for serving client requests.
+     */
+    std::shared_ptr<ClientService> clientService;
+
 
     /**
      * List of callbacks to call when entries are committed.
