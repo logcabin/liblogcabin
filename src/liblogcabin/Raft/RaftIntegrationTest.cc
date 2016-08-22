@@ -1,4 +1,5 @@
 
+#include <gtest/gtest.h>
 #include <unistd.h>
 #include <memory>
 #include <sstream>
@@ -7,11 +8,10 @@
 #include "liblogcabin/Core/Debug.h"
 #include "liblogcabin/Raft/RaftConsensus.h"
 
-using namespace LibLogCabin::Raft;
-using namespace LibLogCabin::Core;
-
 namespace LibLogCabin {
-namespace Examples {
+namespace Raft {
+
+using namespace LibLogCabin::Core;
 
 class TestServer {
 public:
@@ -21,7 +21,6 @@ public:
   bool verifyCallbackData(int lastData);
   bool setConfiguration(uint64_t lastServerId);
   bool pushData(int index, const std::string& data);
-  bool getData(int index, std::string& output);
 
 private:
   RaftConsensus raft;
@@ -75,16 +74,16 @@ bool TestServer::verifyCallbackData(int lastData)
 
 bool TestServer::setConfiguration(uint64_t lastServerId)
 {
-  Protocol::Client::SetConfiguration::Request request;
+  LibLogCabin::Protocol::Client::SetConfiguration::Request request;
   request.set_old_id(lastServerId - 1);
   for (uint64_t i = 1; i <= lastServerId; ++i) {
-    Protocol::Client::Server server;
+    LibLogCabin::Protocol::Client::Server server;
     server.set_server_id(i);
     server.set_addresses("127.0.0.1:" + std::to_string(5253 + i));
     request.add_new_servers()->CopyFrom(server);
   }
 
-  Protocol::Client::SetConfiguration::Response response;
+  LibLogCabin::Protocol::Client::SetConfiguration::Response response;
   auto result = raft.setConfiguration(request, response);
   if (result == RaftConsensus::ClientResult::SUCCESS) {
     return true;
@@ -127,60 +126,49 @@ bool TestServer::pushData(int index, const std::string& data)
   return true;
 }
 
-bool TestServer::getData(int index, std::string& output)
-{
-  return false;
-}
-
 TestServer::~TestServer()
 {
   raft.exit();
 }
 
-} // namespace Examples {
-} // namespace LibLogCabin {
+class RaftIntegrationCallbacksTest : public ::testing::Test {
+public:
+  RaftIntegrationCallbacksTest()
+      : config1(),
+        config2(),
+        server1(),
+        server2() {
+    init();
+  };
 
-using namespace LibLogCabin::Examples;
+  void init() {
+    config1.set("use-temporary-storage", true);
+    config1.set("listenAddresses", "127.0.0.1:5254");
+    server1 = std::unique_ptr<TestServer>(new TestServer(config1, 1));
+    server1->start();
 
-int
-main(int argc, char** argv)
-{
+    config2.set("use-temporary-storage", true);
+    config2.set("listenAddresses", "127.0.0.1:5255");
+    server2 = std::unique_ptr<TestServer>(new TestServer(config2, 2));
+    server2->start();
+
+    ASSERT_TRUE(server1->setConfiguration(2));
+  }
+
   Config config1;
-  config1.set("use-temporary-storage", true);
-  config1.set("listenAddresses", "127.0.0.1:5254");
-  auto server1 = std::unique_ptr<TestServer>(new TestServer(config1, 1));
-  server1->start();
-
   Config config2;
-  config2.set("use-temporary-storage", true);
-  config2.set("listenAddresses", "127.0.0.1:5255");
-  auto server2 = std::unique_ptr<TestServer>(new TestServer(config2, 2));
-  server2->start();
+  std::unique_ptr<TestServer> server1;
+  std::unique_ptr<TestServer> server2;
+};
 
-  if (!server1->setConfiguration(2)) {
-    return 1;
-  }
-
+TEST_F(RaftIntegrationCallbacksTest, callbackCommitedEntries) {
   for (auto i = 0; i < 10000; i++) {
-    if (!server1->pushData(i, std::to_string(i))) {
-      WARNING("Unable to push data, exiting");
-      return 1;
-    }
+    ASSERT_TRUE(server1->pushData(i, std::to_string(i)));
   }
 
-  std::string output;
-  for (auto i = 0; i < 10000; i++) {
-    if (server2->getData(i, output) && output == std::to_string(i)) {
-      WARNING("Found unmatched output, expected: %d, actual: %s", i, output.c_str());
-      return 1;
-    }
-  }
-
-  if (!server1->verifyCallbackData(10000) || !server2->verifyCallbackData(10000)) {
-    return 1;
-  }
-
-  NOTICE("Test server completed");
-
-  return 0;
+  ASSERT_TRUE(server1->verifyCallbackData(10000));
+  ASSERT_TRUE(server2->verifyCallbackData(10000));
 }
+
+} // namespace Raft {
+} // namespace LibLogCabin {
