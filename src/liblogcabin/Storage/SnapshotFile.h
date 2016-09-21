@@ -22,6 +22,7 @@
 #include "liblogcabin/Core/CompatAtomic.h"
 #include "liblogcabin/Core/ProtoBuf.h"
 #include "liblogcabin/Storage/FilesystemUtil.h"
+#include "liblogcabin/Storage/SnapshotMetadata.pb.h"
 
 #ifndef LIBLOGCABIN_STORAGE_SNAPSHOTFILE_H
 #define LIBLOGCABIN_STORAGE_SNAPSHOTFILE_H
@@ -29,9 +30,10 @@
 namespace LibLogCabin {
 namespace Storage {
 
-class Layout; // forward declaration
+// forward declarations
+class Layout;
 
-namespace SnapshotFile {
+namespace Snapshot {
 
 /**
  * Remove any partial snapshots found on disk. This is normally called when the
@@ -42,7 +44,18 @@ void discardPartialSnapshots(const Storage::Layout& storageLayout);
 /**
  * Assists in reading snapshot files from the local filesystem.
  */
-class Reader : public Core::ProtoBuf::InputStream {
+class Reader {
+  public:
+    /// Destructor.
+    virtual ~Reader() {};
+    /// Return the size in bytes for the file.
+    virtual uint64_t getSizeBytes() = 0;
+    virtual FilesystemUtil::FileContents* readSnapshot() = 0;
+    virtual uint8_t readVersion() = 0;
+    virtual std::string readHeader(Storage::SnapshotMetadata::Header& header) = 0;
+};
+
+class DefaultReader : public Reader, Core::ProtoBuf::InputStream {
   public:
     /**
      * Constructor.
@@ -52,17 +65,18 @@ class Reader : public Core::ProtoBuf::InputStream {
      * \throw std::runtime_error
      *      If the file can't be found.
      */
-    explicit Reader(const Storage::Layout& storageLayout);
-    /// Destructor.
-    ~Reader();
+    explicit DefaultReader(const Storage::Layout& storageLayout);
+    ~DefaultReader();
+
     /// Return the size in bytes for the file.
-    uint64_t getSizeBytes();
-    // See Core::ProtoBuf::InputStream.
-    uint64_t getBytesRead() const;
-    // See Core::ProtoBuf::InputStream.
-    std::string readMessage(google::protobuf::Message& message);
-    // See Core::ProtoBuf::InputStream.
-    uint64_t readRaw(void* data, uint64_t length);
+    uint64_t getSizeBytes() override;
+    uint64_t getBytesRead() const override;
+    std::string readHeader(Storage::SnapshotMetadata::Header& header) override;
+    std::string readMessage(google::protobuf::Message& message) override;
+    FilesystemUtil::FileContents* readSnapshot() override;
+    uint8_t readVersion() override;
+    uint64_t readRaw(void* data, uint64_t length) override;
+
   private:
     /// Wraps the raw file descriptor; in charge of closing it when done.
     Storage::FilesystemUtil::File file;
@@ -70,12 +84,29 @@ class Reader : public Core::ProtoBuf::InputStream {
     std::unique_ptr<Storage::FilesystemUtil::FileContents> contents;
     /// The number of bytes read from the file.
     uint64_t bytesRead;
+    /// Directory that's storing the snapshot.
+    Storage::FilesystemUtil::File snapshotDir;
+};
+
+class Writer : public Core::ProtoBuf::OutputStream {
+  public:
+    virtual ~Writer() {}
+
+    virtual void discard() = 0;
+
+    virtual uint64_t save() = 0;
+    // See Core::ProtoBuf::OutputStream.
+    virtual uint64_t getBytesWritten() const = 0;
+    // See Core::ProtoBuf::OutputStream.
+    virtual void writeMessage(const google::protobuf::Message& message) = 0;
+    // See Core::ProtoBuf::OutputStream.
+    virtual void writeRaw(const void* data, uint64_t length) = 0;
 };
 
 /**
  * Assists in writing snapshot files to the local filesystem.
  */
-class Writer : public Core::ProtoBuf::OutputStream {
+class DefaultWriter : public Writer {
   public:
     /**
      * Allocates an object that is shared across processes. Uses a shared,
@@ -98,35 +129,18 @@ class Writer : public Core::ProtoBuf::OutputStream {
      *      "snapshot" in the snapshotDir).
      * TODO(ongaro): what if it can't be written?
      */
-    explicit Writer(const Storage::Layout& storageLayout);
+    explicit DefaultWriter(const Storage::Layout& storageLayout);
     /**
      * Destructor.
      * If the file hasn't been explicitly saved or discarded, prints a warning
      * and discards the file.
      */
-    ~Writer();
+    ~DefaultWriter();
     /**
      * Throw away the file.
      * If you call this after the file has been closed, it will PANIC.
      */
     void discard();
-    /**
-     * Flush changes just down to the operating system's buffer cache.
-     * Leave the file open for additional writes.
-     *
-     * This is useful when forking child processes to write to the file.
-     * The correct procedure for that is:
-     *  0. write stuff
-     *  1. call flushToOS()
-     *  2. fork
-     *  3. child process: write stuff
-     *  4. child process: call flushToOS()
-     *  5. child process: call _exit()
-     *  6. parent process: call seekToEnd()
-     *  7. parent process: write stuff
-     *  8. parent process: call save()
-     */
-    void flushToOS();
     /**
      * Seek to the end of the file, in case another process has written to it.
      * Subsequent calls to getBytesWritten() will include data written by other
@@ -164,10 +178,9 @@ class Writer : public Core::ProtoBuf::OutputStream {
      * implement a watchdog that checks progress of a snapshotting process.
      */
     SharedMMap<std::atomic<uint64_t>> sharedBytesWritten;
-
 };
 
-} // namespace LibLogCabin::Storage::SnapshotFile
+} // namespace LibLogCabin::Storage::Snapshot
 } // namespace LibLogCabin::Storage
 } // namespace LibLogCabin
 

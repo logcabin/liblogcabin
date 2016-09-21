@@ -28,7 +28,7 @@
 
 namespace LibLogCabin {
 namespace Storage {
-namespace SnapshotFile {
+namespace Snapshot {
 namespace {
 
 class StorageSnapshotFileTest : public ::testing::Test {
@@ -51,12 +51,12 @@ class StorageSnapshotFileTest : public ::testing::Test {
 TEST_F(StorageSnapshotFileTest, basic)
 {
     {
-        Writer writer(layout);
+        DefaultWriter writer(layout);
         writer.writeMessage(m1);
         writer.save();
     }
     {
-        Reader reader(layout);
+        DefaultReader reader(layout);
         ProtoBuf::TestMessage out;
         EXPECT_EQ("", reader.readMessage(out));
         EXPECT_EQ(m1, out);
@@ -90,37 +90,14 @@ TEST_F(StorageSnapshotFileTest, discardPartialSnapshots)
 
 TEST_F(StorageSnapshotFileTest, reader_fileNotFound)
 {
-    EXPECT_THROW(Reader reader(layout), std::runtime_error);
-}
-
-TEST_F(StorageSnapshotFileTest, getBytesRead)
-{
-    {
-        Writer writer(layout);
-        uint32_t d = 0xdeadbeef;
-        writer.writeRaw(&d, sizeof(d));
-        writer.save();
-    }
-    {
-        Reader reader(layout);
-        uint32_t x = 0;
-        EXPECT_EQ(0U, reader.getBytesRead());
-        reader.readRaw(&x, 1);
-        EXPECT_EQ(1U, reader.getBytesRead());
-        reader.readRaw(&x, 4);
-        EXPECT_EQ(4U, reader.getBytesRead());
-        reader.readRaw(&x, 2);
-        EXPECT_EQ(4U, reader.getBytesRead());
-    }
+    EXPECT_THROW(DefaultReader reader(layout), std::runtime_error);
 }
 
 TEST_F(StorageSnapshotFileTest, readMessage)
 {
-    uint64_t m1bytes = 0;
     {
-        Writer writer(layout);
+        DefaultWriter writer(layout);
         writer.writeMessage(m1);
-        m1bytes = writer.getBytesWritten();
         uint32_t len = 100;
         len = htobe32(len);
         writer.writeRaw(&len, sizeof(len));
@@ -128,36 +105,33 @@ TEST_F(StorageSnapshotFileTest, readMessage)
         writer.save();
     }
     {
-        Reader reader(layout);
+        DefaultReader reader(layout);
         ProtoBuf::TestMessage out;
         EXPECT_EQ("", reader.readMessage(out));
         EXPECT_EQ(m1, out);
-        EXPECT_EQ(m1bytes, reader.getBytesRead());
         EXPECT_NE("", reader.readMessage(out));
-        EXPECT_EQ(m1bytes + 4, reader.getBytesRead());
         uint32_t x;
         EXPECT_EQ(1U, reader.readRaw(&x, 1));
         EXPECT_NE("", reader.readMessage(out));
-        EXPECT_EQ(m1bytes + 5, reader.getBytesRead());
     }
 }
 
 TEST_F(StorageSnapshotFileTest, readRaw)
 {
     {
-        Writer writer(layout);
+        DefaultWriter writer(layout);
         uint32_t d = 0xdeadbeef;
         writer.writeRaw(&d, sizeof(d));
         writer.save();
     }
     {
-        Reader reader(layout);
+        DefaultReader reader(layout);
         uint32_t x = 0;
         reader.readRaw(&x, sizeof(x));
         EXPECT_EQ(0xdeadbeefU, x);
     }
     {
-        Reader reader(layout);
+        DefaultReader reader(layout);
         uint32_t x = 0;
         EXPECT_EQ(1U, reader.readRaw(&x, 1));
         EXPECT_EQ(0xefU, x);
@@ -174,7 +148,7 @@ TEST_F(StorageSnapshotFileTest, writer_orphanDiscarded)
         {"Storage/SnapshotFile.cc", "ERROR"}
     });
     {
-        Writer writer(layout);
+        DefaultWriter writer(layout);
         uint32_t d = 482;
         writer.writeRaw(&d, sizeof(d));
     }
@@ -187,7 +161,7 @@ TEST_F(StorageSnapshotFileTest, writer_orphanDiscarded)
 TEST_F(StorageSnapshotFileTest, writer_discard)
 {
     {
-        Writer writer(layout);
+        DefaultWriter writer(layout);
         uint32_t d = 482;
         writer.writeRaw(&d, sizeof(d));
         writer.discard();
@@ -197,35 +171,13 @@ TEST_F(StorageSnapshotFileTest, writer_discard)
         Core::StringUtil::join(files, " ");
 }
 
-TEST_F(StorageSnapshotFileTest, writer_flushToOS_continue)
-{
-    {
-        Writer writer(layout);
-        uint32_t d = 482;
-        writer.writeRaw(&d, sizeof(d));
-        writer.flushToOS();
-        d = 998;
-        writer.writeRaw(&d, sizeof(d));
-        writer.save();
-    }
-    {
-        Reader reader(layout);
-        uint32_t x = 0;
-        reader.readRaw(&x, sizeof(x));
-        EXPECT_EQ(482U, x);
-        reader.readRaw(&x, sizeof(x));
-        EXPECT_EQ(998U, x);
-    }
-}
-
 // tests flushToOS and seekToEnd
 TEST_F(StorageSnapshotFileTest, writer_forking)
 {
     {
-        Writer writer(layout);
+        DefaultWriter writer(layout);
         uint32_t d = 482;
         writer.writeRaw(&d, sizeof(d));
-        writer.flushToOS();
         EXPECT_EQ(4U, writer.getBytesWritten());
         pid_t pid = fork();
         ASSERT_LE(0, pid);
@@ -234,7 +186,6 @@ TEST_F(StorageSnapshotFileTest, writer_forking)
             d = 127;
             writer.writeRaw(&d, sizeof(d));
             EXPECT_LT(start, *writer.sharedBytesWritten.value);
-            writer.flushToOS();
             EXPECT_EQ(8U, writer.getBytesWritten());
             _exit(0);
         } else { // parent
@@ -252,7 +203,7 @@ TEST_F(StorageSnapshotFileTest, writer_forking)
         }
     }
     {
-        Reader reader(layout);
+        DefaultReader reader(layout);
         uint32_t x = 0;
         EXPECT_EQ(sizeof(x), reader.readRaw(&x, sizeof(x)));
         EXPECT_EQ(482U, x);
@@ -265,7 +216,7 @@ TEST_F(StorageSnapshotFileTest, writer_forking)
 
 TEST_F(StorageSnapshotFileTest, getBytesWritten)
 {
-    Writer writer(layout);
+    DefaultWriter writer(layout);
     EXPECT_EQ(0U, writer.getBytesWritten());
     uint32_t d = 0xdeadbeef;
     writer.writeRaw(&d, sizeof(d));
@@ -277,7 +228,7 @@ TEST_F(StorageSnapshotFileTest, getBytesWritten)
 
 TEST_F(StorageSnapshotFileTest, sharedBytesWritten)
 {
-    Writer writer(layout);
+    DefaultWriter writer(layout);
     EXPECT_EQ(0U, *writer.sharedBytesWritten.value);
     *writer.sharedBytesWritten.value = 1000;
     uint32_t d = 0xdeadbeef;
@@ -294,7 +245,7 @@ TEST_F(StorageSnapshotFileTest, sharedBytesWritten)
 
 // writeRaw tested with readRaw above
 
-} // namespace LibLogCabin::Storage::SnapshotFile::<anonymous>
-} // namespace LibLogCabin::Storage::SnapshotFile
+} // namespace LibLogCabin::Storage::Snapshot::<anonymous>
+} // namespace LibLogCabin::Storage::Snapshot
 } // namespace LibLogCabin::Storage
 } // namespace LibLogCabin

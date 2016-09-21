@@ -74,7 +74,7 @@ TEST_F(StorageLogFactoryTest, makeLog_Segmented_Binary)
 
     // default
     std::unique_ptr<Log> log = LogFactory::makeLog(config, layout);
-    EXPECT_EQ("SimpleFile", log->getName());
+    EXPECT_EQ("Segmented-Binary", log->getName());
     log.reset();
 
     config.set("storageModule", "Segmented");

@@ -8,8 +8,10 @@ src = [
     "MemoryLog.cc",
     "SimpleFileLog.cc",
     "SegmentedLog.cc",
-    "SnapshotFile.cc"
+    "SnapshotFile.cc",
+    "SnapshotFileFactory.cc"
 ]
 object_files['Storage'] = (env.StaticObject(src) +
                                     env.Protobuf("SegmentedLog.proto") +
-                                    env.Protobuf("SimpleFileLog.proto"))
+                                    env.Protobuf("SimpleFileLog.proto") +
+                                    env.Protobuf("SnapshotMetadata.proto"))

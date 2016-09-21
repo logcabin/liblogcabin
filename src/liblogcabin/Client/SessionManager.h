@@ -21,14 +21,11 @@
 #include <mutex>
 #include <string>
 
+#include "liblogcabin/Core/Config.h"
 #include "liblogcabin/RPC/Address.h"
 
 namespace LibLogCabin {
 
-// forward declaration
-namespace Core {
-class Config;
-}
 
 // forward declaration
 namespace Event {
@@ -165,7 +162,7 @@ class SessionManager {
 
     Event::Loop& eventLoop;
   private:
-    const Core::Config& config;
+    const Core::Config config;
     /**
      * Used only for unit testing. Set to false, normally.
      */

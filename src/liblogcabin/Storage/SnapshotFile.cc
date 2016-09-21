@@ -29,7 +29,7 @@
 
 namespace LibLogCabin {
 namespace Storage {
-namespace SnapshotFile {
+namespace Snapshot {
 
 namespace FilesystemUtil = Storage::FilesystemUtil;
 using Core::StringUtil::format;
@@ -49,41 +49,63 @@ discardPartialSnapshots(const Storage::Layout& layout)
     }
 }
 
-Reader::Reader(const Storage::Layout& storageLayout)
+DefaultReader::DefaultReader(const Storage::Layout& storageLayout)
     : file()
     , contents()
     , bytesRead(0)
+    , snapshotDir(FilesystemUtil::dup(storageLayout.snapshotDir))
 {
-    file = FilesystemUtil::tryOpenFile(storageLayout.snapshotDir,
-                                       "snapshot",
-                                       O_RDONLY);
+    file = FilesystemUtil::tryOpenFile(snapshotDir, "snapshot", O_RDONLY);
     if (file.fd < 0) {
         throw std::runtime_error(format(
                 "Snapshot file not found in %s",
                 storageLayout.snapshotDir.path.c_str()));
     }
-    contents.reset(new FilesystemUtil::FileContents(file));
+    contents.reset(readSnapshot());
 }
 
-Reader::~Reader()
+DefaultReader::~DefaultReader()
 {
 }
 
+FilesystemUtil::FileContents* DefaultReader::readSnapshot()
+{
+  return new FilesystemUtil::FileContents(
+    FilesystemUtil::openFile(snapshotDir, "snapshot", O_RDONLY));
+}
+
+uint8_t DefaultReader::readVersion()
+{
+  uint8_t version;
+  uint64_t bytesRead = readRaw(&version, sizeof(version));
+  if (bytesRead < 1) {
+    // TODO(tnachen): Return Try to remove PANIC here.
+    PANIC("Found completely empty snapshot file (it doesn't even "
+          "have a version field)");
+  }
+  return version;
+}
+
 uint64_t
-Reader::getSizeBytes()
+DefaultReader::getSizeBytes()
 {
     return contents->getFileLength();
 }
 
-
 uint64_t
-Reader::getBytesRead() const
+DefaultReader::getBytesRead() const
 {
-    return bytesRead;
+  return bytesRead;
 }
 
 std::string
-Reader::readMessage(google::protobuf::Message& message)
+DefaultReader::readHeader(SnapshotMetadata::Header& header)
+{
+  return readMessage(header);
+}
+
+std::string
+DefaultReader::readMessage(google::protobuf::Message& message)
 {
     uint32_t length = 0;
     uint64_t r = readRaw(&length, sizeof(length));
@@ -128,7 +150,7 @@ Reader::readMessage(google::protobuf::Message& message)
 }
 
 uint64_t
-Reader::readRaw(void* data, uint64_t length)
+DefaultReader::readRaw(void* data, uint64_t length)
 {
     uint64_t r = contents->copyPartial(bytesRead, data, length);
     bytesRead += r;
@@ -136,7 +158,7 @@ Reader::readRaw(void* data, uint64_t length)
 }
 
 template<typename T>
-Writer::SharedMMap<T>::SharedMMap()
+DefaultWriter::SharedMMap<T>::SharedMMap()
     : value(NULL)
 {
     void* addr = mmap(NULL,
@@ -152,7 +174,7 @@ Writer::SharedMMap<T>::SharedMMap()
 }
 
 template<typename T>
-Writer::SharedMMap<T>::~SharedMMap()
+DefaultWriter::SharedMMap<T>::~SharedMMap()
 {
     if (munmap(value, sizeof(*value)) != 0) {
         PANIC("Failed to munmap shared anonymous page: %s",
@@ -160,7 +182,7 @@ Writer::SharedMMap<T>::~SharedMMap()
     }
 }
 
-Writer::Writer(const Storage::Layout& storageLayout)
+DefaultWriter::DefaultWriter(const Storage::Layout& storageLayout)
     : parentDir(FilesystemUtil::dup(storageLayout.snapshotDir))
     , stagingName()
     , file()
@@ -175,7 +197,7 @@ Writer::Writer(const Storage::Layout& storageLayout)
                                     O_WRONLY|O_CREAT|O_EXCL);
 }
 
-Writer::~Writer()
+DefaultWriter::~DefaultWriter()
 {
     if (file.fd >= 0) {
         WARNING("Discarding partial snapshot %s", file.path.c_str());
@@ -184,7 +206,7 @@ Writer::~Writer()
 }
 
 void
-Writer::discard()
+DefaultWriter::discard()
 {
     if (file.fd < 0)
         PANIC("File already closed");
@@ -193,13 +215,7 @@ Writer::discard()
 }
 
 void
-Writer::flushToOS()
-{
-    // Nothing to do.
-}
-
-void
-Writer::seekToEnd()
+DefaultWriter::seekToEnd()
 {
     off64_t r = lseek64(file.fd, 0, SEEK_END);
     if (r < 0)
@@ -208,7 +224,7 @@ Writer::seekToEnd()
 }
 
 uint64_t
-Writer::save()
+DefaultWriter::save()
 {
     if (file.fd < 0)
         PANIC("File already closed");
@@ -222,13 +238,13 @@ Writer::save()
 }
 
 uint64_t
-Writer::getBytesWritten() const
+DefaultWriter::getBytesWritten() const
 {
     return bytesWritten;
 }
 
 void
-Writer::writeMessage(const google::protobuf::Message& message)
+DefaultWriter::writeMessage(const google::protobuf::Message& message)
 {
     Core::Buffer buf;
     Core::ProtoBuf::serialize(message, buf);
@@ -247,7 +263,7 @@ Writer::writeMessage(const google::protobuf::Message& message)
 }
 
 void
-Writer::writeRaw(const void* data, uint64_t length)
+DefaultWriter::writeRaw(const void* data, uint64_t length)
 {
     ssize_t r = FilesystemUtil::write(file.fd, data, length);
     if (r < 0) {
@@ -259,6 +275,6 @@ Writer::writeRaw(const void* data, uint64_t length)
     *sharedBytesWritten.value += Core::Util::downCast<uint64_t>(r);
 }
 
-} // namespace LibLogCabin::Storage::SnapshotFile
+} // namespace LibLogCabin::Storage::Snapshot
 } // namespace LibLogCabin::Storage
 } // namespace LibLogCabin

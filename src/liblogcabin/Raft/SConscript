@@ -5,5 +5,4 @@ src = [
     "RaftConsensus.cc",
     "RaftConsensusInvariants.cc"
 ]
-object_files['Raft'] = (env.StaticObject(src) +
-                                 env.Protobuf("SnapshotMetadata.proto"))
+object_files['Raft'] = (env.StaticObject(src))

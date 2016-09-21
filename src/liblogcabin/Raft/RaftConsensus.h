@@ -36,7 +36,7 @@
 #include "liblogcabin/RPC/ClientRPC.h"
 #include "liblogcabin/Storage/Layout.h"
 #include "liblogcabin/Storage/Log.h"
-#include "liblogcabin/Storage/SnapshotFile.h"
+#include "liblogcabin/Storage/SnapshotFileFactory.h"
 
 #ifndef LIBLOGCABIN_RAFT_RAFTCONSENSUS_H
 #define LIBLOGCABIN_RAFT_RAFTCONSENSUS_H
@@ -949,7 +949,7 @@ class RaftConsensus {
         /**
          * A handle to the snapshot file for entries of type 'SNAPSHOT'.
          */
-        std::unique_ptr<Storage::SnapshotFile::Reader> snapshotReader;
+        std::unique_ptr<Storage::Snapshot::Reader> snapshotReader;
 
         /**
          * Cluster time when leader created entry/snapshot. This is valid for
@@ -991,8 +991,13 @@ class RaftConsensus {
      *      Configuration for the Raft service
      * \param serverId
      *      Server id for the Raft service
+     * \param snapshotFileFactory
+     *      Factory to create snapshot file reader/writer
      */
-    explicit RaftConsensus(Core::Config& config, uint64_t serverId = 0UL, Storage::Log* log = nullptr);
+    explicit RaftConsensus(
+      Core::Config& config,
+      uint64_t serverId = 0UL,
+      Storage::Snapshot::FileFactory* snapshotFileFactory = nullptr);
 
     /**
      * Destructor.
@@ -1140,7 +1145,7 @@ class RaftConsensus {
      * \return
      *      A file the state machine can dump its snapshot into.
      */
-    std::unique_ptr<Storage::SnapshotFile::Writer>
+    std::unique_ptr<Storage::Snapshot::Writer>
     beginSnapshot(uint64_t lastIncludedIndex);
 
     /**
@@ -1157,7 +1162,7 @@ class RaftConsensus {
      *      the consensus module will call save() on it.
      */
     void snapshotDone(uint64_t lastIncludedIndex,
-                      std::unique_ptr<Storage::SnapshotFile::Writer> writer);
+                      std::unique_ptr<Storage::Snapshot::Writer> writer);
 
     /**
      * Add information about the consensus state to the given structure.
@@ -1643,12 +1648,17 @@ class RaftConsensus {
     uint64_t lastSnapshotBytes;
 
     /**
-     * If not NULL, this is a Storage::SnapshotFile::Reader that covers up through
+     * Factory that creates snapshot reader and writer..
+     */
+    std::unique_ptr<Storage::Snapshot::FileFactory> snapshotFileFactory;
+
+    /**
+     * If not NULL, this is a Storage::Snapshot::Reader that covers up through
      * lastSnapshotIndex. This is ready for the state machine to process and is
      * returned to the state machine in getNextEntry(). It's just a cache which
      * can be repopulated with readSnapshot().
      */
-    mutable std::unique_ptr<Storage::SnapshotFile::Reader> snapshotReader;
+    mutable std::unique_ptr<Storage::Snapshot::Reader> snapshotReader;
 
     /**
      * This is used in handleInstallSnapshot when receiving a snapshot from
@@ -1656,7 +1666,7 @@ class RaftConsensus {
      * at a time, and any partial snapshots here are discarded when the term
      * changes.
      */
-    std::unique_ptr<Storage::SnapshotFile::Writer> snapshotWriter;
+    std::unique_ptr<Storage::Snapshot::Writer> snapshotWriter;
 
     /**
      * The largest entry ID for which a quorum is known to have stored the same

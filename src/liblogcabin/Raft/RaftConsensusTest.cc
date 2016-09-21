@@ -518,6 +518,20 @@ class ServerRaftConsensusTest : public ::testing::Test {
         return std::dynamic_pointer_cast<Peer>(server);
     }
 
+    uint64_t readSnapshotData(
+        Storage::FilesystemUtil::FileContents* contents,
+        void* data,
+        uint64_t length) {
+      // We expect default snapshot contents, where it starts with
+      // version, message header and then data.
+      uint64_t offset = sizeof(uint8_t);
+      uint32_t headerLength;
+      contents->copyPartial(offset, &headerLength, sizeof(headerLength));
+      headerLength = be32toh(headerLength);
+      offset += sizeof(headerLength) + headerLength;
+      return contents->copyPartial(offset, data, length);
+    }
+
     Core::Config config;
     Storage::Layout storageLayout;
     Clock::Mocker clockMocker;
@@ -643,7 +657,7 @@ TEST_F(ServerRaftConsensusTest, init_withsnapshot)
         drainDiskQueue(c1);
         EXPECT_EQ(3U, c1.commitIndex);
 
-        std::unique_ptr<Storage::SnapshotFile::Writer> writer =
+        std::unique_ptr<Storage::Snapshot::Writer> writer =
             c1.beginSnapshot(2);
         uint32_t d = 0xdeadbeef;
         writer->writeRaw(&d, sizeof(d));
@@ -793,7 +807,7 @@ TEST_F(ServerRaftConsensusTest, getNextEntry_snapshot)
     drainDiskQueue(*consensus);
     EXPECT_EQ(3U, consensus->commitIndex);
 
-    std::unique_ptr<Storage::SnapshotFile::Writer> writer =
+    std::unique_ptr<Storage::Snapshot::Writer> writer =
         consensus->beginSnapshot(2);
     uint32_t d = 0xdeadbeef;
     writer->writeRaw(&d, sizeof(d));
@@ -808,9 +822,11 @@ TEST_F(ServerRaftConsensusTest, getNextEntry_snapshot)
     EXPECT_EQ(2U, e1.index);
     EXPECT_EQ(RaftConsensus::Entry::SNAPSHOT, e1.type);
     EXPECT_EQ(10U, e1.clusterTime);
+
     uint32_t x;
-    EXPECT_EQ(sizeof(x),
-              e1.snapshotReader->readRaw(&x, sizeof(x)));
+    Storage::FilesystemUtil::FileContents* snapshotFile =
+      e1.snapshotReader->readSnapshot();
+    readSnapshotData(snapshotFile, &x, sizeof(x));
     EXPECT_EQ(0xdeadbeef, x);
 
     RaftConsensus::Entry e2 = consensus->getNextEntry(2);
@@ -840,7 +856,7 @@ TEST_F(ServerRaftConsensusTest, getSnapshotStats)
     EXPECT_GT(1024U, consensus->getSnapshotStats().log_bytes());
     EXPECT_TRUE(consensus->getSnapshotStats().is_leader());
 
-    std::unique_ptr<Storage::SnapshotFile::Writer> writer =
+    std::unique_ptr<Storage::Snapshot::Writer> writer =
         consensus->beginSnapshot(2);
     consensus->snapshotDone(2, std::move(writer));
     EXPECT_EQ(3U, consensus->getSnapshotStats().log_start_index());
@@ -1189,7 +1205,7 @@ TEST_F(ServerRaftConsensusTest, handleInstallSnapshot)
 
     // Take a snapshot, saving it directly instead of calling snapshotDone().
     // This way, the consensus module does not know about the snapshot file.
-    std::unique_ptr<Storage::SnapshotFile::Writer> writer =
+    std::unique_ptr<Storage::Snapshot::Writer> writer =
         consensus->beginSnapshot(1);
     writer->save();
     std::string snapshotContents =
@@ -1234,10 +1250,11 @@ TEST_F(ServerRaftConsensusTest, handleInstallSnapshot)
               "bytes_stored: 49", response);
     EXPECT_EQ(1U, consensus->lastSnapshotIndex);
     EXPECT_FALSE(bool(consensus->snapshotWriter));
+    Storage::FilesystemUtil::FileContents* contents =
+      consensus->snapshotReader->readSnapshot();
     char helloWorld[13];
     EXPECT_EQ(sizeof(helloWorld) - 1,
-              consensus->snapshotReader->readRaw(helloWorld,
-                                                 sizeof(helloWorld) - 1));
+              readSnapshotData(contents, helloWorld, sizeof(helloWorld) - 1));
     helloWorld[sizeof(helloWorld) - 1] = '\0';
     EXPECT_STREQ("hello world!", helloWorld);
 
@@ -1253,7 +1270,7 @@ TEST_F(ServerRaftConsensusTest, handleInstallSnapshot_byteOffsetHigh)
 
     // Take a snapshot, saving it directly instead of calling snapshotDone().
     // This way, the consensus module does not know about the snapshot file.
-    std::unique_ptr<Storage::SnapshotFile::Writer> writer =
+    std::unique_ptr<Storage::Snapshot::Writer> writer =
         consensus->beginSnapshot(1);
     writer->save();
     std::string snapshotContents =
@@ -1624,7 +1641,7 @@ TEST_F(ServerRaftConsensusTest, beginSnapshot)
     EXPECT_EQ(3U, consensus->commitIndex);
 
     // call beginSnapshot
-    std::unique_ptr<Storage::SnapshotFile::Writer> writer =
+    std::unique_ptr<Storage::Snapshot::Writer> writer =
         consensus->beginSnapshot(3);
     uint32_t d = 0xdeadbeef;
     writer->writeRaw(&d, sizeof(d));
@@ -1641,8 +1658,10 @@ TEST_F(ServerRaftConsensusTest, beginSnapshot)
     EXPECT_EQ(2U, consensus->lastSnapshotTerm);
     EXPECT_EQ(30U, consensus->lastSnapshotClusterTime);
     uint32_t x = 0;
+    Storage::FilesystemUtil::FileContents* contents =
+      consensus->snapshotReader->readSnapshot();
     EXPECT_EQ(sizeof(x),
-              consensus->snapshotReader->readRaw(&x, sizeof(x)));
+              readSnapshotData(contents, &x, sizeof(x)));
     EXPECT_EQ(0xdeadbeef, x);
     EXPECT_EQ((std::vector<uint64_t>{1, 4}),
               Core::STLUtil::getKeys(consensus->configurationManager->
@@ -1666,10 +1685,10 @@ TEST_F(ServerRaftConsensusTest, snapshotDone)
     EXPECT_EQ(3U, consensus->commitIndex);
 
     // this one will get discarded
-    std::unique_ptr<Storage::SnapshotFile::Writer> discardWriter =
+    std::unique_ptr<Storage::Snapshot::Writer> discardWriter =
         consensus->beginSnapshot(2);
     // this one will get saved
-    std::unique_ptr<Storage::SnapshotFile::Writer> saveWriter =
+    std::unique_ptr<Storage::Snapshot::Writer> saveWriter =
         consensus->beginSnapshot(3);
 
     consensus->snapshotDone(3, std::move(saveWriter));
@@ -2496,7 +2515,7 @@ class ServerRaftConsensusPSTest : public ServerRaftConsensusPTest {
 
         // First create a snapshot file on disk.
         // Note that this one doesn't have a Raft header.
-        Storage::SnapshotFile::Writer w(consensus->storageLayout);
+        Storage::Snapshot::DefaultWriter w(consensus->storageLayout);
         w.writeRaw("hello, world!", 13);
         w.save();
         consensus->lastSnapshotIndex = 2;
@@ -2682,7 +2701,7 @@ TEST_F(ServerRaftConsensusTest, discardUnneededEntries)
     consensus->append({&entry1});
     consensus->startNewElection();
     drainDiskQueue(*consensus);
-    std::unique_ptr<Storage::SnapshotFile::Writer> writer =
+    std::unique_ptr<Storage::Snapshot::Writer> writer =
         consensus->beginSnapshot(2);
     uint32_t d = 0xdeadbeef;
     writer->writeRaw(&d, sizeof(d));
@@ -2702,7 +2721,7 @@ TEST_F(ServerRaftConsensusTest, getLastLogTerm)
     drainDiskQueue(*consensus);
     EXPECT_EQ(1U, consensus->getLastLogTerm());
     // snapshot only
-    std::unique_ptr<Storage::SnapshotFile::Writer> writer =
+    std::unique_ptr<Storage::Snapshot::Writer> writer =
         consensus->beginSnapshot(2);
     uint32_t d = 0xdeadbeef;
     writer->writeRaw(&d, sizeof(d));
@@ -2859,7 +2878,7 @@ TEST_F(ServerRaftConsensusTest, readSnapshot_incompleteLogPrefix)
 TEST_F(ServerRaftConsensusTest, readSnapshot_emptyFile)
 {
     init();
-    Storage::SnapshotFile::Writer writer(consensus->storageLayout);
+    Storage::Snapshot::DefaultWriter writer(consensus->storageLayout);
     writer.save();
     EXPECT_DEATH({ consensus->readSnapshot(); },
                  "completely empty");
@@ -2868,7 +2887,7 @@ TEST_F(ServerRaftConsensusTest, readSnapshot_emptyFile)
 TEST_F(ServerRaftConsensusTest, readSnapshot_unknownVersion)
 {
     init();
-    Storage::SnapshotFile::Writer writer(consensus->storageLayout);
+    Storage::Snapshot::DefaultWriter writer(consensus->storageLayout);
     uint8_t version = 2;
     writer.writeRaw(&version, sizeof(version));
     writer.save();
@@ -3129,7 +3148,7 @@ TEST_F(ServerRaftConsensusTest, startNewElection)
     consensus->append({&entry5});
 
     consensus->snapshotWriter.reset(
-        new Storage::SnapshotFile::Writer(consensus->storageLayout));
+        new Storage::Snapshot::DefaultWriter(consensus->storageLayout));
     consensus->startNewElection();
     EXPECT_EQ(State::CANDIDATE, consensus->state);
     EXPECT_EQ(6U, consensus->currentTerm);
@@ -3199,7 +3218,7 @@ TEST_F(ServerRaftConsensusTest, stepDown)
 
     // from follower to new term
     consensus->snapshotWriter.reset(
-        new Storage::SnapshotFile::Writer(consensus->storageLayout));
+        new Storage::Snapshot::DefaultWriter(consensus->storageLayout));
     consensus->stepDown(consensus->currentTerm + 1);
     EXPECT_EQ(oldStartElectionAt, consensus->startElectionAt);
     EXPECT_FALSE(bool(consensus->snapshotWriter));
@@ -3261,7 +3280,7 @@ TEST_F(ServerRaftConsensusTest, upToDateLeader)
     EXPECT_TRUE(consensus->upToDateLeader(lockGuard));
     // snapshot and discard log -> true
     lockGuard.unlock();
-    std::unique_ptr<Storage::SnapshotFile::Writer> writer =
+    std::unique_ptr<Storage::Snapshot::Writer> writer =
         consensus->beginSnapshot(2);
     uint32_t d = 0xdeadbeef;
     writer->writeRaw(&d, sizeof(d));

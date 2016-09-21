@@ -39,7 +39,6 @@ class ServerClientServiceTest : public ::testing::Test {
         : storagePath(Storage::FilesystemUtil::mkdtemp())
         , raft()
         , session()
-        , thread()
     {
     }
 
@@ -54,6 +53,7 @@ class ServerClientServiceTest : public ::testing::Test {
         config.set("serverId", "1");
         config.set("storagePath", storagePath);
         raft.reset(new RaftConsensus(config, 1));
+        raft->init();
         RPC::Address address("127.0.0.1", LibLogCabin::Protocol::Common::DEFAULT_PORT);
         address.refresh(RPC::Address::TimePoint::max());
         session = RPC::ClientSession::makeSession(
@@ -62,15 +62,13 @@ class ServerClientServiceTest : public ::testing::Test {
             1024 * 1024,
             TimePoint::max(),
             Core::Config());
-        thread = std::thread(&Event::Loop::runForever, &raft->eventLoop);
       }
     }
 
     ~ServerClientServiceTest()
     {
         if (raft) {
-            raft->eventLoop.exit();
-            thread.join();
+            raft->exit();
         }
         Storage::FilesystemUtil::remove(storagePath);
     }
@@ -94,7 +92,6 @@ class ServerClientServiceTest : public ::testing::Test {
     std::string storagePath;
     std::unique_ptr<RaftConsensus> raft;
     std::shared_ptr<RPC::ClientSession> session;
-    std::thread thread;
 };
 
 TEST_F(ServerClientServiceTest, handleRPCBadOpcode) {

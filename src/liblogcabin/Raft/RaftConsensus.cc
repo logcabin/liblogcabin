@@ -24,7 +24,6 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "liblogcabin/Raft/SnapshotMetadata.pb.h"
 #include "liblogcabin/Protocol/Raft.pb.h"
 
 #include "liblogcabin/Core/Buffer.h"
@@ -41,6 +40,7 @@
 #include "liblogcabin/RPC/Server.h"
 #include "liblogcabin/RPC/ServerRPC.h"
 #include "liblogcabin/Storage/LogFactory.h"
+#include "liblogcabin/Storage/SnapshotMetadata.pb.h"
 
 namespace LibLogCabin {
 namespace Raft {
@@ -1026,7 +1026,10 @@ RaftConsensus::Entry::~Entry()
 
 ////////// RaftConsensus //////////
 
-RaftConsensus::RaftConsensus(Core::Config& config, uint64_t serverId, Log* log)
+RaftConsensus::RaftConsensus(
+    Core::Config& config,
+    uint64_t serverId,
+    Storage::Snapshot::FileFactory* snapshotFileFactory)
     : ELECTION_TIMEOUT(
         std::chrono::milliseconds(
             config.read<uint64_t>(
@@ -1071,7 +1074,7 @@ RaftConsensus::RaftConsensus(Core::Config& config, uint64_t serverId, Log* log)
     , stateChanged()
     , exiting(false)
     , numPeerThreads(0)
-    , log(log)
+    , log()
     , logSyncQueued(false)
     , leaderDiskThreadWorking(false)
     , configuration()
@@ -1082,6 +1085,7 @@ RaftConsensus::RaftConsensus(Core::Config& config, uint64_t serverId, Log* log)
     , lastSnapshotTerm(0)
     , lastSnapshotClusterTime(0)
     , lastSnapshotBytes(0)
+    , snapshotFileFactory(snapshotFileFactory)
     , snapshotReader()
     , snapshotWriter()
     , commitIndex(0)
@@ -1224,6 +1228,10 @@ RaftConsensus::init()
         votedFor = log->metadata.voted_for();
     updateLogMetadata();
 
+    if (!snapshotFileFactory) {
+      snapshotFileFactory.reset(new Storage::Snapshot::FileFactory());
+    }
+
     // Read snapshot after reading log, since readSnapshot() will get rid of
     // conflicting log entries
     readSnapshot();
@@ -1231,7 +1239,7 @@ RaftConsensus::init()
     // Clean up incomplete snapshots left by prior runs. This could be done
     // earlier, but maybe it's nicer to make sure we can get to this point
     // without PANICing before deleting these files.
-    Storage::SnapshotFile::discardPartialSnapshots(storageLayout);
+    Storage::Snapshot::discardPartialSnapshots(storageLayout);
 
     if (configuration->id == 0)
         NOTICE("No configuration, waiting to receive one.");
@@ -1616,8 +1624,7 @@ RaftConsensus::handleInstallSnapshot(
     }
 
     if (!snapshotWriter) {
-        snapshotWriter.reset(
-            new Storage::SnapshotFile::Writer(storageLayout));
+      snapshotWriter.reset(snapshotFileFactory->makeWriter(storageLayout));
     }
     response.set_bytes_stored(snapshotWriter->getBytesWritten());
 
@@ -1892,15 +1899,15 @@ RaftConsensus::setSupportedStateMachineVersions(uint16_t minSupported,
     }
 }
 
-std::unique_ptr<Storage::SnapshotFile::Writer>
+std::unique_ptr<Storage::Snapshot::Writer>
 RaftConsensus::beginSnapshot(uint64_t lastIncludedIndex)
 {
     std::lock_guard<Mutex> lockGuard(mutex);
 
     NOTICE("Creating new snapshot through log index %lu (inclusive)",
            lastIncludedIndex);
-    std::unique_ptr<Storage::SnapshotFile::Writer> writer(
-                new Storage::SnapshotFile::Writer(storageLayout));
+    std::unique_ptr<Storage::Snapshot::Writer> writer(
+        snapshotFileFactory->makeWriter(storageLayout));
 
     // Only committed entries may be snapshotted.
     // (This check relies on commitIndex monotonically increasing.)
@@ -1914,7 +1921,7 @@ RaftConsensus::beginSnapshot(uint64_t lastIncludedIndex)
     writer->writeRaw(&version, sizeof(version));
 
     // set header fields
-    SnapshotMetadata::Header header;
+    Storage::SnapshotMetadata::Header header;
     header.set_last_included_index(lastIncludedIndex);
     // Set last_included_term and last_cluster_time:
     if (lastIncludedIndex >= log->getLogStartIndex() &&
@@ -1963,7 +1970,7 @@ RaftConsensus::beginSnapshot(uint64_t lastIncludedIndex)
 void
 RaftConsensus::snapshotDone(
         uint64_t lastIncludedIndex,
-        std::unique_ptr<Storage::SnapshotFile::Writer> writer)
+        std::unique_ptr<Storage::Snapshot::Writer> writer)
 {
     std::lock_guard<Mutex> lockGuard(mutex);
     if (lastIncludedIndex <= lastSnapshotIndex) {
@@ -2555,8 +2562,14 @@ RaftConsensus::installSnapshot(std::unique_lock<Mutex>& lockGuard,
     // that this will change while we're transferring chunks).
     if (!peer.snapshotFile) {
         namespace FS = Storage::FilesystemUtil;
-        peer.snapshotFile.reset(new FS::FileContents(
-            FS::openFile(storageLayout.snapshotDir, "snapshot", O_RDONLY)));
+        try {
+          if (!snapshotReader) {
+            snapshotReader.reset(snapshotFileFactory->makeReader(storageLayout));
+          }
+        } catch (const std::runtime_error& e) { // file not found
+            PANIC("Could not open snapshot: %s", e.what());
+        }
+        peer.snapshotFile.reset(snapshotReader->readSnapshot());
         peer.snapshotFileOffset = 0;
         peer.lastSnapshotIndex = lastSnapshotIndex;
         NOTICE("Beginning to send snapshot of %lu bytes up through index %lu "
@@ -2791,32 +2804,26 @@ RaftConsensus::packEntries(
 void
 RaftConsensus::readSnapshot()
 {
-    std::unique_ptr<Storage::SnapshotFile::Reader> reader;
+    std::unique_ptr<Storage::Snapshot::Reader> reader;
     if (storageLayout.serverDir.fd != -1) {
         try {
-            reader.reset(new Storage::SnapshotFile::Reader(storageLayout));
+          reader.reset(snapshotFileFactory->makeReader(storageLayout));
         } catch (const std::runtime_error& e) { // file not found
             NOTICE("%s", e.what());
         }
     }
     if (reader) {
         // Check that this snapshot uses format version 1
-        uint8_t version = 0;
-        uint64_t bytesRead = reader->readRaw(&version, sizeof(version));
-        if (bytesRead < 1) {
-            PANIC("Found completely empty snapshot file (it doesn't even "
-                  "have a version field)");
-        } else {
-            if (version != 1) {
-                PANIC("Snapshot format version read was %u, but this code can "
-                      "only read version 1",
-                      version);
-            }
+        uint8_t version = reader->readVersion();
+        if (version != 1) {
+          PANIC("Snapshot format version read was %u, but this code can "
+                "only read version 1",
+                version);
         }
 
         // load header contents
-        SnapshotMetadata::Header header;
-        std::string error = reader->readMessage(header);
+        Storage::SnapshotMetadata::Header header;
+        std::string error = reader->readHeader(header);
         if (!error.empty()) {
             PANIC("Couldn't read snapshot header: %s", error.c_str());
         }

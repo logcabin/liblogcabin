@@ -12,7 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-package LibLogCabin.Raft.SnapshotMetadata;
+package LibLogCabin.Storage.SnapshotMetadata;
 
 import "build/liblogcabin/Protocol/Raft.proto";
 
@@ -44,7 +44,7 @@ message Header {
     optional LibLogCabin.Raft.Protocol.Configuration configuration = 2;
 
     /**
-     * The log index where 'configuration' came from. This is required iff
+     * The log index where 'configuration' came from. This is required if
      * 'configuration' is set.
      * (It shouldn't be strictly necessary to persist this, as the
      * configuration could be re-assigned lastIncludedIndex instead; however,
