@@ -57,8 +57,7 @@ public:
     FilesystemUtil::FileContents* readSnapshot() {
       return new FilesystemUtil::FileContents(
         FilesystemUtil::openFile(snapshotDir, "testSnapshot", O_RDONLY));
-    }
-
+    };
   private:
     uint64_t sizeBytes;
     std::unique_ptr<FilesystemUtil::FileContents> contents;
@@ -128,6 +127,8 @@ public:
   bool verifyCallbackData(int lastData);
   bool setConfiguration(uint64_t lastServerId);
   bool pushData(const std::string& data);
+  bool takeSnapshot();
+  void readSnapshot();
 
 private:
   RaftConsensus raft;
@@ -145,6 +146,28 @@ TestServer::TestServer(Config& config, uint64_t serverId, Snapshot::FileFactory*
       }
     }
   });
+}
+
+bool TestServer::takeSnapshot()
+{
+  LibLogCabin::Raft::Protocol::SimpleConfiguration configuration;
+  uint64_t lastId;
+  auto getResult = raft.getConfiguration(configuration, lastId);
+  if (getResult != RaftConsensus::ClientResult::SUCCESS) {
+    WARNING("Unable to read configuration from leader");
+    return false;
+  }
+
+  auto writer = raft.beginSnapshot(lastId);
+  writer->save();
+  raft.snapshotDone(lastId, std::move(writer));
+
+  return true;
+}
+
+void TestServer::readSnapshot()
+{
+  raft.readSnapshot();
 }
 
 void TestServer::start()
@@ -299,9 +322,9 @@ TEST_F(RaftIntegrationCallbacksTest, callbackCommitedEntriesNewServer) {
   auto server3 = newServer(3);
   ASSERT_TRUE(server1->setConfiguration(3));
 
-  ASSERT_TRUE(server1->verifyCallbackData(10000));
-  ASSERT_TRUE(server2->verifyCallbackData(10000));
-  ASSERT_TRUE(server3->verifyCallbackData(10000));
+  EXPECT_TRUE(server1->verifyCallbackData(10000));
+  EXPECT_TRUE(server2->verifyCallbackData(10000));
+  EXPECT_TRUE(server3->verifyCallbackData(10000));
 
   server1->exit();
   server2->exit();
@@ -318,8 +341,11 @@ TEST_F(RaftIntegrationCallbacksTest, testSnapshotHandler) {
     ASSERT_TRUE(server1->pushData(std::to_string(i)));
   }
 
-  ASSERT_TRUE(server1->verifyCallbackData(10000));
-  ASSERT_TRUE(server2->verifyCallbackData(10000));
+  EXPECT_TRUE(server1->verifyCallbackData(10000));
+  EXPECT_TRUE(server2->verifyCallbackData(10000));
+
+  EXPECT_TRUE(server1->takeSnapshot());
+  server1->readSnapshot();
 
   server1->exit();
   server2->exit();
