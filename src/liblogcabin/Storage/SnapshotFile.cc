@@ -61,17 +61,17 @@ DefaultReader::DefaultReader(const Storage::Layout& storageLayout)
                 "Snapshot file not found in %s",
                 storageLayout.snapshotDir.path.c_str()));
     }
-    contents.reset(readSnapshot());
+    contents.reset(readSnapshot().get());
 }
 
 DefaultReader::~DefaultReader()
 {
 }
 
-FilesystemUtil::FileContents* DefaultReader::readSnapshot()
+folly::Future<FilesystemUtil::FileContents*> DefaultReader::readSnapshot()
 {
-  return new FilesystemUtil::FileContents(
-    FilesystemUtil::openFile(snapshotDir, "snapshot", O_RDONLY));
+  return makeFuture<FilesystemUtil::FileContents*>(new FilesystemUtil::FileContents(
+      FilesystemUtil::openFile(snapshotDir, "snapshot", O_RDONLY)));
 }
 
 uint8_t DefaultReader::readVersion()

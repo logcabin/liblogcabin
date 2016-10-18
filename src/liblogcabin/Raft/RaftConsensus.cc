@@ -1352,7 +1352,6 @@ RaftConsensus::getNextEntry(uint64_t lastIndex) const
             throw Core::Util::ThreadInterruptedException();
         if (commitIndex >= nextIndex) {
             RaftConsensus::Entry entry;
-
             // Make the state machine load a snapshot if we don't have the next
             // entry it needs in the log.
             if (log->getLogStartIndex() > nextIndex) {
@@ -2569,7 +2568,7 @@ RaftConsensus::installSnapshot(std::unique_lock<Mutex>& lockGuard,
         } catch (const std::runtime_error& e) { // file not found
             PANIC("Could not open snapshot: %s", e.what());
         }
-        peer.snapshotFile.reset(snapshotReader->readSnapshot());
+        peer.snapshotFile.reset(snapshotReader->readSnapshot().get());
         peer.snapshotFileOffset = 0;
         peer.lastSnapshotIndex = lastSnapshotIndex;
         NOTICE("Beginning to send snapshot of %lu bytes up through index %lu "

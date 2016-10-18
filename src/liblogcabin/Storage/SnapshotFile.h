@@ -14,6 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define GLOG_NO_ABBREVIATED_SEVERITIES
+
+#include <folly/futures/Future.h>
 #include <google/protobuf/message.h>
 #include <memory>
 #include <stdexcept>
@@ -50,7 +53,7 @@ class Reader {
     virtual ~Reader() {};
     /// Return the size in bytes for the file.
     virtual uint64_t getSizeBytes() = 0;
-    virtual FilesystemUtil::FileContents* readSnapshot() = 0;
+    virtual folly::Future<FilesystemUtil::FileContents*> readSnapshot() = 0;
     virtual uint8_t readVersion() = 0;
     virtual std::string readHeader(Storage::SnapshotMetadata::Header& header) = 0;
 };
@@ -73,7 +76,7 @@ class DefaultReader : public Reader, Core::ProtoBuf::InputStream {
     uint64_t getBytesRead() const override;
     std::string readHeader(Storage::SnapshotMetadata::Header& header) override;
     std::string readMessage(google::protobuf::Message& message) override;
-    FilesystemUtil::FileContents* readSnapshot() override;
+    folly::Future<FilesystemUtil::FileContents*> readSnapshot() override;
     uint8_t readVersion() override;
     uint64_t readRaw(void* data, uint64_t length) override;
 

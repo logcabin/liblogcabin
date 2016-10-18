@@ -225,7 +225,7 @@ std::ostream& operator<<(std::ostream& ostream, LogLevel level);
 /**
  * Return whether the current logging configuration includes messages of
  * the given level for the given filename.
- * This is normally called by LOG().
+ * This is normally called by LLOG().
  * \warning
  *      fileName must be a string literal!
  * \param level
@@ -240,7 +240,7 @@ isLogging(LogLevel level, const char* fileName);
 
 /**
  * Unconditionally log the given message to stderr.
- * This is normally called by LOG().
+ * This is normally called by LLOG().
  * \param level
  *      The level of importance of the message.
  * \param fileName
@@ -282,7 +282,7 @@ extern std::string processName;
  * \param ...
  *      The arguments to the format string, as in printf.
  */
-#define LOG(level, format, ...) do { \
+#define LLOG(level, format, ...) do { \
     if (::LibLogCabin::Core::Debug::isLogging(level, __FILE__)) { \
         ::LibLogCabin::Core::Debug::log(level, \
             __FILE__, __LINE__, __FUNCTION__, \
@@ -317,27 +317,27 @@ extern std::string processName;
  *      The arguments to the format string, as in printf.
  */
 #define ERROR(format, ...) \
-    LOG((::LibLogCabin::Core::Debug::LogLevel::ERROR), format, ##__VA_ARGS__)
+    LLOG((::LibLogCabin::Core::Debug::LogLevel::ERROR), format, ##__VA_ARGS__)
 
 /**
  * Log a WARNING message.
  * \copydetails ERROR
  */
 #define WARNING(format, ...) \
-    LOG((::LibLogCabin::Core::Debug::LogLevel::WARNING), format, ##__VA_ARGS__)
+    LLOG((::LibLogCabin::Core::Debug::LogLevel::WARNING), format, ##__VA_ARGS__)
 
 /**
  * Log a NOTICE message.
  * \copydetails ERROR
  */
 #define NOTICE(format, ...) \
-    LOG((::LibLogCabin::Core::Debug::LogLevel::NOTICE), format, ##__VA_ARGS__)
+    LLOG((::LibLogCabin::Core::Debug::LogLevel::NOTICE), format, ##__VA_ARGS__)
 
 /**
  * Log a VERBOSE message.
  * \copydetails ERROR
  */
 #define VERBOSE(format, ...) \
-    LOG((::LibLogCabin::Core::Debug::LogLevel::VERBOSE), format, ##__VA_ARGS__)
+    LLOG((::LibLogCabin::Core::Debug::LogLevel::VERBOSE), format, ##__VA_ARGS__)
 
 #endif /* LIBLOGCABIN_CORE_DEBUG_H */
