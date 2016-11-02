@@ -22,6 +22,9 @@
 #include <thread>
 #include <unordered_map>
 
+#define GLOG_NO_ABBREVIATED_SEVERITIES
+#include <folly/futures/Future.h>
+
 #include "liblogcabin/Protocol/Client.pb.h"
 #include "liblogcabin/Protocol/ServerStats.pb.h"
 #include "liblogcabin/Protocol/Raft.pb.h"
@@ -1293,7 +1296,7 @@ class RaftConsensus {
      *      State used in communicating with the follower, building the RPC
      *      request, and processing its result.
      */
-    void installSnapshot(std::unique_lock<Mutex>& lockGuard, Peer& peer);
+    folly::Future<folly::Unit> installSnapshot(std::unique_lock<Mutex>& lockGuard, Peer& peer);
 
     /**
      * Transition to being a leader. This is called when a candidate has
@@ -1484,6 +1487,13 @@ class RaftConsensus {
     Event::Loop eventLoop;
 
   private:
+    /**
+     * Future callbacks
+     */
+    void _installSnapshot(std::unique_lock<Mutex>& lockGuard,
+                          Peer& peer,
+                          Raft::Protocol::InstallSnapshot::Request& request);
+
     /**
      * Configuration for Raft library
      */

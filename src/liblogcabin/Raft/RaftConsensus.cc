@@ -2546,7 +2546,7 @@ RaftConsensus::appendEntries(std::unique_lock<Mutex>& lockGuard,
     }
 }
 
-void
+folly::Future<folly::Unit>
 RaftConsensus::installSnapshot(std::unique_lock<Mutex>& lockGuard,
                                Peer& peer)
 {
@@ -2556,10 +2556,8 @@ RaftConsensus::installSnapshot(std::unique_lock<Mutex>& lockGuard,
     request.set_term(currentTerm);
     request.set_version(2);
 
-    // Open the latest snapshot if we haven't already. Stash a copy of the
-    // lastSnapshotIndex that goes along with the file, since it's possible
-    // that this will change while we're transferring chunks).
     if (!peer.snapshotFile) {
+        auto promise = std::make_shared<folly::Promise<folly::Unit>>();
         namespace FS = Storage::FilesystemUtil;
         try {
           if (!snapshotReader) {
@@ -2568,14 +2566,35 @@ RaftConsensus::installSnapshot(std::unique_lock<Mutex>& lockGuard,
         } catch (const std::runtime_error& e) { // file not found
             PANIC("Could not open snapshot: %s", e.what());
         }
-        peer.snapshotFile.reset(snapshotReader->readSnapshot().get());
-        peer.snapshotFileOffset = 0;
-        peer.lastSnapshotIndex = lastSnapshotIndex;
-        NOTICE("Beginning to send snapshot of %lu bytes up through index %lu "
-               "to follower",
-               peer.snapshotFile->getFileLength(),
-               lastSnapshotIndex);
+        auto currentLastSnapshotIndex = lastSnapshotIndex;
+        snapshotReader->readSnapshot().then(
+            [=, &peer, &promise, &request, &lockGuard](Storage::FilesystemUtil::FileContents* snapshotFile) {
+              // Open the latest snapshot if we haven't already. Stash a copy of the
+              // lastSnapshotIndex that goes along with the file, since it's possible
+              // that this will change while we're transferring chunks).
+
+              peer.snapshotFile.reset(snapshotFile);
+              peer.snapshotFileOffset = 0;
+              peer.lastSnapshotIndex = currentLastSnapshotIndex;
+              NOTICE("Beginning to send snapshot of %lu bytes up through index %lu "
+                     "to follower",
+                     peer.snapshotFile->getFileLength(),
+                     lastSnapshotIndex);
+              _installSnapshot(lockGuard, peer, request);
+              promise->setValue();
+            });
+        return promise->getFuture();
     }
+
+    _installSnapshot(lockGuard, peer, request);
+    return folly::Unit();
+}
+
+void
+RaftConsensus::_installSnapshot(std::unique_lock<Mutex>& lockGuard,
+                                Peer& peer,
+                                Raft::Protocol::InstallSnapshot::Request& request)
+{
     request.set_last_snapshot_index(peer.lastSnapshotIndex);
     request.set_byte_offset(peer.snapshotFileOffset);
     uint64_t numDataBytes = 0;

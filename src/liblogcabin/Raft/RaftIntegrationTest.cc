@@ -1,3 +1,4 @@
+#include <folly/futures/Future.h>
 #include <fcntl.h>
 #include <gtest/gtest.h>
 #include <unistd.h>
@@ -17,6 +18,7 @@ using Core::StringUtil::format;
 
 class TestSnapshotFileFactory : public Snapshot::FileFactory {
 public:
+  ~TestSnapshotFileFactory() {}
   class TestReader : public Snapshot::Reader {
   public:
     TestReader(const Layout& layout) :
@@ -29,7 +31,7 @@ public:
           "Snapshot file not found in %s",
           snapshotDir.path.c_str()));
       }
-      contents.reset(readSnapshot());
+      contents.reset(readSnapshot().get());
     };
 
     uint64_t getSizeBytes() {
@@ -54,9 +56,9 @@ public:
       return 1;
     };
 
-    FilesystemUtil::FileContents* readSnapshot() {
-      return new FilesystemUtil::FileContents(
-        FilesystemUtil::openFile(snapshotDir, "testSnapshot", O_RDONLY));
+    folly::Future<FilesystemUtil::FileContents*> readSnapshot() {
+      return folly::makeFuture(new FilesystemUtil::FileContents(
+          FilesystemUtil::openFile(snapshotDir, "testSnapshot", O_RDONLY)));
     };
   private:
     uint64_t sizeBytes;

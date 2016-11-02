@@ -825,7 +825,7 @@ TEST_F(ServerRaftConsensusTest, getNextEntry_snapshot)
 
     uint32_t x;
     Storage::FilesystemUtil::FileContents* snapshotFile =
-      e1.snapshotReader->readSnapshot();
+      e1.snapshotReader->readSnapshot().get();
     readSnapshotData(snapshotFile, &x, sizeof(x));
     EXPECT_EQ(0xdeadbeef, x);
 
@@ -1251,7 +1251,7 @@ TEST_F(ServerRaftConsensusTest, handleInstallSnapshot)
     EXPECT_EQ(1U, consensus->lastSnapshotIndex);
     EXPECT_FALSE(bool(consensus->snapshotWriter));
     Storage::FilesystemUtil::FileContents* contents =
-      consensus->snapshotReader->readSnapshot();
+      consensus->snapshotReader->readSnapshot().get();
     char helloWorld[13];
     EXPECT_EQ(sizeof(helloWorld) - 1,
               readSnapshotData(contents, helloWorld, sizeof(helloWorld) - 1));
@@ -1659,7 +1659,7 @@ TEST_F(ServerRaftConsensusTest, beginSnapshot)
     EXPECT_EQ(30U, consensus->lastSnapshotClusterTime);
     uint32_t x = 0;
     Storage::FilesystemUtil::FileContents* contents =
-      consensus->snapshotReader->readSnapshot();
+      consensus->snapshotReader->readSnapshot().get();
     EXPECT_EQ(sizeof(x),
               readSnapshotData(contents, &x, sizeof(x)));
     EXPECT_EQ(0xdeadbeef, x);
@@ -2546,7 +2546,7 @@ TEST_F(ServerRaftConsensusPSTest, installSnapshot_rpcFailed)
         {"Server/RaftConsensus.cc", "ERROR"}
     });
     std::unique_lock<Mutex> lockGuard(consensus->mutex);
-    consensus->installSnapshot(lockGuard, *peer);
+    consensus->installSnapshot(lockGuard, *peer).wait();
     EXPECT_LT(Clock::now(), peer->backoffUntil);
     EXPECT_EQ(0U, peer->snapshotFileOffset);
 }
@@ -2560,7 +2560,7 @@ TEST_F(ServerRaftConsensusPSTest, installSnapshot_termChanged)
             request,
             std::make_shared<BumpTermAndReply>(*consensus, response));
     std::unique_lock<Mutex> lockGuard(consensus->mutex);
-    consensus->installSnapshot(lockGuard, *peer);
+    consensus->installSnapshot(lockGuard, *peer).wait();
     EXPECT_EQ(TimePoint::min(), peer->backoffUntil);
     EXPECT_EQ(0U, peer->snapshotFileOffset);
 }
@@ -2572,7 +2572,7 @@ TEST_F(ServerRaftConsensusPSTest, installSnapshot_termStale)
     peerService->reply(Raft::Protocol::OpCode::INSTALL_SNAPSHOT,
                        request, response);
     std::unique_lock<Mutex> lockGuard(consensus->mutex);
-    consensus->installSnapshot(lockGuard, *peer);
+    consensus->installSnapshot(lockGuard, *peer).wait();
     EXPECT_EQ(0U, peer->snapshotFileOffset);
     EXPECT_EQ(State::FOLLOWER, consensus->state);
     EXPECT_EQ(10U, consensus->currentTerm);
@@ -2592,10 +2592,10 @@ TEST_F(ServerRaftConsensusPSTest, installSnapshot_ok)
     peerService->reply(Raft::Protocol::OpCode::INSTALL_SNAPSHOT,
                        request, response);
     std::unique_lock<Mutex> lockGuard(consensus->mutex);
-    consensus->installSnapshot(lockGuard, *peer);
+    consensus->installSnapshot(lockGuard, *peer).wait();
     // make sure we don't use an updated lastSnapshotIndex value
     consensus->lastSnapshotIndex = 1;
-    consensus->installSnapshot(lockGuard, *peer);
+    consensus->installSnapshot(lockGuard, *peer).wait();
     EXPECT_EQ(2U, peer->matchIndex);
     EXPECT_EQ(3U, peer->nextIndex);
     EXPECT_FALSE(peer->snapshotFile);
@@ -2618,9 +2618,9 @@ TEST_F(ServerRaftConsensusPSTest, installSnapshot_suppressBulkData)
     peerService->reply(Raft::Protocol::OpCode::INSTALL_SNAPSHOT,
                        request, response);
     std::unique_lock<Mutex> lockGuard(consensus->mutex);
-    consensus->installSnapshot(lockGuard, *peer);
+    consensus->installSnapshot(lockGuard, *peer).wait();
     EXPECT_FALSE(peer->suppressBulkData);
-    consensus->installSnapshot(lockGuard, *peer);
+    consensus->installSnapshot(lockGuard, *peer).wait();
     EXPECT_FALSE(peer->suppressBulkData);
 }
 
@@ -2651,10 +2651,10 @@ TEST_F(ServerRaftConsensusPSTest, installSnapshot_notAllBytesStored)
                        request, response);
 
     std::unique_lock<Mutex> lockGuard(consensus->mutex);
-    consensus->installSnapshot(lockGuard, *peer);
-    consensus->installSnapshot(lockGuard, *peer);
-    consensus->installSnapshot(lockGuard, *peer);
-    consensus->installSnapshot(lockGuard, *peer);
+    consensus->installSnapshot(lockGuard, *peer).wait();
+    consensus->installSnapshot(lockGuard, *peer).wait();
+    consensus->installSnapshot(lockGuard, *peer).wait();
+    consensus->installSnapshot(lockGuard, *peer).wait();
     EXPECT_EQ(2U, peer->matchIndex);
 }
 
@@ -2941,7 +2941,7 @@ TEST_F(ServerRaftConsensusTest, replicateEntry_subscribeEntries)
     EXPECT_EQ(ClientResult::SUCCESS, result.first);
     // 1: entry1, 2: no-op, 3: entry2
     EXPECT_EQ(3U, result.second);
-    EXPECT_EQ(1, entriesFound.size());
+    EXPECT_EQ(1U, entriesFound.size());
     EXPECT_EQ("hello", entriesFound.front()->data());
 }
 

@@ -61,6 +61,8 @@ DefaultReader::DefaultReader(const Storage::Layout& storageLayout)
                 "Snapshot file not found in %s",
                 storageLayout.snapshotDir.path.c_str()));
     }
+    // Assuming safe to wait on future here as default read snapshot
+    // is a fast operation.
     contents.reset(readSnapshot().get());
 }
 
@@ -70,7 +72,7 @@ DefaultReader::~DefaultReader()
 
 folly::Future<FilesystemUtil::FileContents*> DefaultReader::readSnapshot()
 {
-  return makeFuture<FilesystemUtil::FileContents*>(new FilesystemUtil::FileContents(
+  return folly::makeFuture<FilesystemUtil::FileContents*>(new FilesystemUtil::FileContents(
       FilesystemUtil::openFile(snapshotDir, "snapshot", O_RDONLY)));
 }
 

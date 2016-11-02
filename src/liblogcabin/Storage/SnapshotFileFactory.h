@@ -28,6 +28,7 @@ namespace Snapshot {
 
 class FileFactory {
 public:
+  virtual ~FileFactory() {}
   /**
    * Construct and return a SnapshotFile Reader object.
    * \param storageLayout
