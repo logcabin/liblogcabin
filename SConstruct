@@ -93,7 +93,7 @@ if env['CXX_FAMILY'].lower() == 'auto':
         print 'Could not detect compiler: %s' % e
         pass
 
-CXX_STANDARD = 'c++11'
+CXX_STANDARD = 'c++14'
 
 if (env['CXX_FAMILY'] == 'gcc' and
     Version(env['CXX_VERSION']) < Version('4.7')):

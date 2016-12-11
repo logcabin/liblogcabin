@@ -17,8 +17,8 @@
 #include <memory>
 #include <vector>
 
-#include "build/liblogcabin/Protocol/Raft.pb.h"
-#include "build/liblogcabin/Protocol/RaftLogMetadata.pb.h"
+#include "liblogcabin/Protocol/Raft.pb.h"
+#include "liblogcabin/Protocol/RaftLogMetadata.pb.h"
 
 #ifndef LIBLOGCABIN_STORAGE_LOG_H
 #define LIBLOGCABIN_STORAGE_LOG_H

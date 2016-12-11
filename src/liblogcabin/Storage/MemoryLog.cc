@@ -18,11 +18,11 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "build/liblogcabin/Protocol/Raft.pb.h"
 #include "liblogcabin/Core/Buffer.h"
 #include "liblogcabin/Core/Debug.h"
 #include "liblogcabin/Core/ProtoBuf.h"
 #include "liblogcabin/Core/StringUtil.h"
+#include "liblogcabin/Protocol/Raft.pb.h"
 #include "liblogcabin/Storage/MemoryLog.h"
 
 namespace LibLogCabin {

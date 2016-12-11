@@ -19,7 +19,7 @@
 #include "liblogcabin/Protocol/Common.h"
 #include "liblogcabin/RPC/ClientRPC.h"
 #include "liblogcabin/RPC/ClientSession.h"
-#include "build/liblogcabin/Protocol/Client.pb.h"
+#include "liblogcabin/Protocol/Client.pb.h"
 
 namespace LibLogCabin {
 namespace Client {

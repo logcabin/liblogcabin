@@ -22,8 +22,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "build/liblogcabin/Protocol/Raft.pb.h"
-#include "build/liblogcabin/Protocol/ServerStats.pb.h"
 #include "liblogcabin/Core/Checksum.h"
 #include "liblogcabin/Core/Config.h"
 #include "liblogcabin/Core/Debug.h"
@@ -32,6 +30,8 @@
 #include "liblogcabin/Core/ThreadId.h"
 #include "liblogcabin/Core/Time.h"
 #include "liblogcabin/Core/Util.h"
+#include "liblogcabin/Protocol/Raft.pb.h"
+#include "liblogcabin/Protocol/ServerStats.pb.h"
 #include "liblogcabin/Storage/FilesystemUtil.h"
 #include "liblogcabin/Storage/SegmentedLog.h"
 

@@ -19,10 +19,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "build/liblogcabin/Protocol/Client.pb.h"
-#include "build/liblogcabin/Protocol/Raft.pb.h"
 #include "liblogcabin/Core/Debug.h"
 #include "liblogcabin/Core/ProtoBuf.h"
+#include "liblogcabin/Protocol/Client.pb.h"
+#include "liblogcabin/Protocol/Raft.pb.h"
 #include "liblogcabin/Storage/Log.h"
 
 namespace LibLogCabin {

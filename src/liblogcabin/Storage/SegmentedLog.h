@@ -18,13 +18,13 @@
 #include <thread>
 #include <vector>
 
-#include "build/liblogcabin/Storage/SegmentedLog.pb.h"
 #include "liblogcabin/Core/Buffer.h"
 #include "liblogcabin/Core/ConditionVariable.h"
 #include "liblogcabin/Core/Mutex.h"
 #include "liblogcabin/Core/RollingStat.h"
 #include "liblogcabin/Storage/FilesystemUtil.h"
 #include "liblogcabin/Storage/Log.h"
+#include "liblogcabin/Storage/SegmentedLog.pb.h"
 
 #ifndef LIBLOGCABIN_STORAGE_SEGMENTEDLOG_H
 #define LIBLOGCABIN_STORAGE_SEGMENTEDLOG_H
