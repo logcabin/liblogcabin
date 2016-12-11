@@ -261,6 +261,6 @@ def RecursiveGlob(pathname):
 
 ib = env.Alias("install-lib", env.Install("/usr/local/lib", library))
 headers = RecursiveGlob("build")
-hdr_inst = [env.Install(os.path.dirname('/usr/local/include/liblogcabin/'+h.replace("build/","")), h) for h in headers]
+hdr_inst = [env.Install(os.path.dirname('/usr/local/include/liblogcabin/'+h.replace("build/liblogcabin/","")), h) for h in headers]
 ih = env.Alias("install-headers", hdr_inst)
 env.Alias("install", [ib, ih])
