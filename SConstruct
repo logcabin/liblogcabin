@@ -1,4 +1,5 @@
 from distutils.version import LooseVersion as Version
+import fnmatch
 import re
 import sys
 import os
@@ -250,3 +251,16 @@ library = env.StaticLibrary("build/liblogcabin",
                    object_files['RPC'] +
                    object_files['Storage']))
 env.Default(library)
+
+def RecursiveGlob(pathname):
+    matches = []
+    for root, dirnames, filenames in os.walk(pathname):
+        for filename in fnmatch.filter(filenames, '*.h'):
+            matches.append(os.path.join(root, filename))
+    return matches
+
+ib = env.Alias("install-lib", env.Install("/usr/local/lib", library))
+headers = RecursiveGlob("build")
+hdr_inst = [env.Install(os.path.dirname('/usr/local/include/liblogcabin/'+h.replace("build/","")), h) for h in headers]
+ih = env.Alias("install-headers", hdr_inst)
+env.Alias("install", [ib, ih])
