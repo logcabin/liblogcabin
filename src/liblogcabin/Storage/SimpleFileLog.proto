@@ -19,7 +19,7 @@
 
 package LibLogCabin.Storage.SimpleFileLogMetadata;
 
-import "build/liblogcabin/Protocol/RaftLogMetadata.proto";
+import "liblogcabin/Protocol/RaftLogMetadata.proto";
 
 message Metadata {
     required uint64 version = 1;

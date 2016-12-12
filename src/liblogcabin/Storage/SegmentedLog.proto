@@ -20,7 +20,7 @@
 
 package LibLogCabin.Storage.SegmentedLogMetadata;
 
-import "build/liblogcabin/Protocol/RaftLogMetadata.proto";
+import "liblogcabin/Protocol/RaftLogMetadata.proto";
 
 /**
  * The format for SegmentedLog's metadata files.

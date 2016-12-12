@@ -16,9 +16,9 @@
 #include <gtest/gtest.h>
 #include <thread>
 
-#include "build/liblogcabin/Core/ProtoBufTest.pb.h"
 #include "liblogcabin/Core/Buffer.h"
 #include "liblogcabin/Core/Debug.h"
+#include "liblogcabin/Core/ProtoBufTest.pb.h"
 #include "liblogcabin/Event/Loop.h"
 #include "liblogcabin/Protocol/Common.h"
 #include "liblogcabin/RPC/ClientRPC.h"

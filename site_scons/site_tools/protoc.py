@@ -24,10 +24,10 @@
 #  Author : Scott Stafford
 #  Date : 2009-12-09 20:36:14
 
-""" 
+"""
 protoc.py: Protoc Builder for SCons
 
-This Builder invokes protoc to generate C++ and Python  from a .proto file.  
+This Builder invokes protoc to generate C++ and Python  from a .proto file.
 
 NOTE: Java is not currently supported.
 """
@@ -97,7 +97,7 @@ def generate(env):
     env['PROTOC']        = env.Detect(protocs) or 'protoc'
     env['PROTOCFLAGS']   = SCons.Util.CLVar('')
     env['PROTOCPROTOPATH'] = SCons.Util.CLVar('')
-    env['PROTOCCOM']     = '$PROTOC ${["-I%s"%x for x in PROTOCPROTOPATH]} $PROTOCFLAGS --cpp_out=$PROTOCCPPOUTFLAGS$PROTOCOUTDIR ${PROTOCPYTHONOUTDIR and ("--python_out="+PROTOCPYTHONOUTDIR) or ""} ${PROTOCFDSOUT and ("-o"+PROTOCFDSOUT) or ""} ${SOURCES}'
+    env['PROTOCCOM']     = '$PROTOC --proto_path=build ${["-I%s"%x for x in PROTOCPROTOPATH]} $PROTOCFLAGS --cpp_out=build ${PROTOCPYTHONOUTDIR and ("--python_out="+build) or ""} ${PROTOCFDSOUT and ("-o"+PROTOCFDSOUT) or ""} "${SOURCES}"'
     env['PROTOCOUTDIR'] = '${SOURCE.dir}'
     env['PROTOCPYTHONOUTDIR'] = "python"
     env['PROTOCSRCSUFFIX']  = '.proto'

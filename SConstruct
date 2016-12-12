@@ -57,6 +57,7 @@ opts.AddVariables(
 
 env = Environment(options = opts,
                   tools = ['default', 'protoc', 'packaging'],
+                  SHELL="/bin/bash",
                   ENV = os.environ)
 Help(opts.GenerateHelpText(env))
 

@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 
-#include "build/liblogcabin/Storage/SimpleFileLog.pb.h"
+#include "liblogcabin/Storage/SimpleFileLog.pb.h"
 #include "liblogcabin/Storage/FilesystemUtil.h"
 #include "liblogcabin/Storage/MemoryLog.h"
 #include "liblogcabin/Storage/Log.h"
