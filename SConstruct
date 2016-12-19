@@ -244,9 +244,10 @@ SConscript('src/liblogcabin/RPC/SConscript', variant_dir='build/liblogcabin/RPC'
 SConscript('src/liblogcabin/Storage/SConscript', variant_dir='build/liblogcabin/Storage')
 SConscript('test/SConscript', variant_dir='build/test')
 
-library = env.StaticLibrary("build/liblogcabin",
+library = env.StaticLibrary("build/libliblogcabin",
                   (object_files['Core'] +
                    object_files['Event'] +
+                   object_files['Client'] +
                    object_files['Protocol'] +
                    object_files['Raft'] +
                    object_files['RPC'] +
