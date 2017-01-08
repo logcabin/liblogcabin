@@ -1250,7 +1250,7 @@ RaftConsensus::init()
             &RaftConsensus::leaderDiskThreadMain, this);
         timerThread = std::thread(
             &RaftConsensus::timerThreadMain, this);
-        if (config.read<bool>("disableStateMachineUpdates", false)) {
+        if (config.read<bool>("disableStateMachineUpdates", true)) {
             NOTICE("Not starting state machine updater thread (state machine "
                    "updates are disabled in config)");
         } else {
