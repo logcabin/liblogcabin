@@ -14,7 +14,7 @@ On Ubuntu packages can be installed with:
 % sudo apt-get install scons build-essential protobuf-compiler libprotobuf-dev autoconf
 
 cryptopp can be installed from source:
-% git clone http://github.com/tnachen/cryptocpp; cd cryptocpp; git checkout 5_6_1_fixes; make
+% git clone http://github.com/tnachen/cryptopp; cd cryptopp; git checkout 5_6_1_fixes; make
 % sudo make install
 
 folly also can be installed from source (follow folly's README for pre-reqs):
